@@ -1,0 +1,420 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  Award,
+  BookOpen,
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  Filter,
+  Layers,
+  Play,
+  Star,
+  Target,
+  Zap,
+} from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import Breadcrumbs from "./Breadcrumbs";
+import { getTheoryById } from "./theoryData";
+
+const INITIAL_TASKS = [
+  { id: "T-01", title: "Екі нүктелік зарядтың өзара әрекетін есептеу", summary: "Кулон заңы бойынша екі нүктелік заряд арасындағы электростатикалық күшті анықтаңыз. Зарядтар мен арақашықтық берілген.", topic: "Кулон заңы", difficulty: "Базалық", points: 10, status: "done" },
+  { id: "T-02", title: "Электр өрісінің кернеулігін есептеу", summary: "Берілген нүктелік зарядтан белгілі қашықтықтағы электр өрісінің кернеулік векторын табыңыз.", topic: "Электр өрісі", difficulty: "Базалық", points: 10, status: "progress" },
+  { id: "T-03", title: "Конденсатор сыйымдылығын анықтау", summary: "Пластиналар арасындағы диэлектрик ортасы бар жазық конденсатордың электр сыйымдылығын есептеңіз.", topic: "Конденсаторлар", difficulty: "Орташа", points: 15, status: "done" },
+  { id: "T-04", title: "Тізбек бөлігіндегі кернеу құлауы", summary: "Тізбек бөлігі үшін Ом заңын қолданып, резистордағы кернеу құлауын және ток күшін табыңыз.", topic: "Тізбектер", difficulty: "Базалық", points: 10, status: "done" },
+  { id: "T-05", title: "Параллель жалғанған резисторлар", summary: "Параллель жалғанған үш резистордың жалпы кедергісін және әр тармақтағы ток күшін есептеңіз.", topic: "Тізбектер", difficulty: "Орташа", points: 15, status: "idle" },
+  { id: "T-06", title: "ЭҚК және ішкі кедергі", summary: "Батареяның ЭҚК мен ішкі кедергісін білу арқылы тұтынушыдағы кернеу мен токты анықтаңыз.", topic: "Энергия көздері", difficulty: "Орташа", points: 15, status: "idle" },
+  { id: "T-07", title: "Электр тогының жұмысы мен қуаты", summary: "Берілген уақыт ішінде электр тізбегінде атқарылатын жұмысты және тұтынылатын қуатты есептеңіз.", topic: "Қуат", difficulty: "Орташа", points: 15, status: "progress" },
+  { id: "T-08", title: "Магнит өрісіндегі ток өткізгіш", summary: "Сыртқы магнит өрісінде орналасқан токты өткізгішке әсер ететін Ампер күшін табыңыз.", topic: "Магнетизм", difficulty: "Орташа", points: 20, status: "idle" },
+  { id: "T-09", title: "Лоренц күші және зарядтың қозғалысы", summary: "Магнит өрісінде қозғалатын оң зарядқа әсер ететін Лоренц күшінің бағыты мен шамасын анықтаңыз.", topic: "Магнетизм", difficulty: "Күрделі", points: 25, status: "idle" },
+  { id: "T-10", title: "Электромагниттік индукция ЭҚК", summary: "Магнит ағынының өзгеруіне байланысты катушкада пайда болатын индукция ЭҚК есептеңіз.", topic: "Индукция", difficulty: "Күрделі", points: 25, status: "idle" },
+  { id: "T-11", title: "Кирхгоф ережелерін қолдану", summary: "Кирхгофтың екі ережесін пайдаланып, күрделі тармақталған тізбектегі барлық токтарды табыңыз.", topic: "Тізбектер", difficulty: "Күрделі", points: 30, status: "idle" },
+  { id: "T-12", title: "Конденсатор батареясындағы заряд", summary: "Тізбектей жалғанған конденсаторлар батареясындағы жалпы зарядты және кернеулерді есептеңіз.", topic: "Конденсаторлар", difficulty: "Орташа", points: 20, status: "idle" },
+  { id: "T-13", title: "Потенциалдар айырмасы", summary: "Нүктелік зарядтың электр өрісіндегі екі нүкте арасындағы потенциалдар айырмасын анықтаңыз.", topic: "Электр өрісі", difficulty: "Орташа", points: 15, status: "idle" },
+  { id: "T-14", title: "Соленоидтың магнит өрісі", summary: "Берілген параметрлері бар соленоидтың орталығындағы магнит индукциясын есептеңіз.", topic: "Магнетизм", difficulty: "Күрделі", points: 25, status: "idle" },
+  { id: "T-15", title: "Электр генераторының ЭҚК", summary: "Айнымалы ток генераторы шығаратын максималды ЭҚК мен жиілігін берілген мәліметтер арқылы табыңыз.", topic: "Генераторлар", difficulty: "Күрделі", points: 30, status: "idle" },
+];
+
+const DIFF_META = {
+  "Базалық": { dot: "#22c55e", bg: "rgba(34,197,94,0.12)", text: "#4ade80", label: "Базалық" },
+  "Орташа": { dot: "#f59e0b", bg: "rgba(245,158,11,0.12)", text: "#fbbf24", label: "Орташа" },
+  "Күрделі": { dot: "#ef4444", bg: "rgba(239,68,68,0.12)", text: "#f87171", label: "Күрделі" },
+};
+
+const TOPIC_COLORS = {
+  "Кулон заңы": { bg: "rgba(251,191,36,0.12)", text: "#fbbf24" },
+  "Электр өрісі": { bg: "rgba(139,92,246,0.15)", text: "#c4b5fd" },
+  "Конденсаторлар": { bg: "rgba(6,182,212,0.12)", text: "#67e8f9" },
+  "Тізбектер": { bg: "rgba(99,102,241,0.15)", text: "#a5b4fc" },
+  "Энергия көздері": { bg: "rgba(234,179,8,0.12)", text: "#fde047" },
+  "Қуат": { bg: "rgba(249,115,22,0.12)", text: "#fb923c" },
+  "Магнетизм": { bg: "rgba(236,72,153,0.12)", text: "#f9a8d4" },
+  "Индукция": { bg: "rgba(16,185,129,0.12)", text: "#6ee7b7" },
+  "Генераторлар": { bg: "rgba(168,85,247,0.12)", text: "#d8b4fe" },
+};
+
+function StatusBtn({ status, onClick }) {
+  const cfg = {
+    idle: { label: "Орындау", bg: "#1e3a5f", border: "#3b82f6", text: "#93c5fd", icon: <Play size={13} style={{ flexShrink: 0 }} /> },
+    progress: { label: "Жалғастыру", bg: "#3d2a04", border: "#f59e0b", text: "#fcd34d", icon: <Clock size={13} style={{ flexShrink: 0 }} /> },
+    done: { label: "Аяқталды", bg: "#052e16", border: "#22c55e", text: "#86efac", icon: <CheckCircle size={13} style={{ flexShrink: 0 }} /> },
+  }[status];
+
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "7px 14px",
+        borderRadius: 8,
+        fontSize: 12.5,
+        fontWeight: 700,
+        background: cfg.bg,
+        border: `1.5px solid ${cfg.border}`,
+        color: cfg.text,
+        cursor: "pointer",
+        fontFamily: "inherit",
+        transition: "all 0.2s ease",
+        letterSpacing: "0.02em",
+      }}
+      onMouseEnter={(event) => {
+        event.currentTarget.style.filter = "brightness(1.2)";
+        event.currentTarget.style.transform = "scale(1.04)";
+      }}
+      onMouseLeave={(event) => {
+        event.currentTarget.style.filter = "brightness(1)";
+        event.currentTarget.style.transform = "scale(1)";
+      }}
+    >
+      {cfg.icon}
+      {cfg.label}
+    </button>
+  );
+}
+
+function TaskCard({ task, idx, onCycle }) {
+  const [hovered, setHovered] = useState(false);
+  const diff = DIFF_META[task.difficulty];
+  const topicC = TOPIC_COLORS[task.topic] || { bg: "rgba(99,102,241,0.15)", text: "#a5b4fc" };
+  const glowColor = { idle: "#3b82f6", progress: "#f59e0b", done: "#22c55e" }[task.status];
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: "#ffffff",
+        border: `1.5px solid ${hovered ? glowColor : "rgba(167,139,250,0.28)"}`,
+        borderRadius: 16,
+        padding: "20px 20px 18px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        cursor: "default",
+        transform: hovered ? "translateY(-6px)" : "translateY(0)",
+        boxShadow: hovered ? `0 16px 40px rgba(76,29,149,0.12), 0 0 20px ${glowColor}22` : "0 10px 26px rgba(76,29,149,0.08)",
+        transition: "all 0.28s cubic-bezier(.4,0,.2,1)",
+        animation: "fadeUp 0.4s ease both",
+        animationDelay: `${idx * 45}ms`,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 2,
+          background: `linear-gradient(90deg, transparent, ${glowColor}, transparent)`,
+          opacity: hovered ? 1 : 0.3,
+          transition: "opacity 0.3s",
+        }}
+      />
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono','Courier New',monospace",
+            fontSize: 11.5,
+            fontWeight: 700,
+            color: "#6366f1",
+            letterSpacing: "0.05em",
+            background: "#eef2ff",
+            padding: "3px 9px",
+            borderRadius: 6,
+          }}
+        >
+          #{task.id}
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 700, color: "#fbbf24" }}>
+          <Award size={13} color="#fbbf24" />
+          {task.points} ұпай
+        </span>
+      </div>
+
+      <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: 0, lineHeight: 1.5, transition: "color 0.2s" }}>
+        {task.title}
+      </h3>
+
+      <p
+        style={{
+          fontSize: 12.5,
+          color: "#64748b",
+          margin: 0,
+          lineHeight: 1.6,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        }}
+      >
+        {task.summary}
+      </p>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 20, background: topicC.bg, color: topicC.text }}>
+          {task.topic}
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 20, background: diff.bg, color: diff.text }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: diff.dot, display: "inline-block", flexShrink: 0 }} />
+          {diff.label}
+        </span>
+      </div>
+
+      <div style={{ height: 1, background: "rgba(167,139,250,0.18)", margin: "2px 0" }} />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <StatusBtn status={task.status} onClick={() => onCycle(task.id)} />
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: "#eef2ff",
+            border: "1px solid rgba(167,139,250,0.28)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "transform 0.35s ease",
+            transform: hovered ? "rotate(15deg)" : "rotate(0deg)",
+          }}
+        >
+          <Zap size={15} color="#818cf8" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressRing({ done, total }) {
+  const radius = 20;
+  const circumference = 2 * Math.PI * radius;
+  const pct = total ? done / total : 0;
+
+  return (
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r={radius} fill="none" stroke="rgba(99,102,241,0.15)" strokeWidth="4" />
+      <circle
+        cx="26"
+        cy="26"
+        r={radius}
+        fill="none"
+        stroke="url(#rg)"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={circumference * (1 - pct)}
+        style={{ transform: "rotate(-90deg)", transformOrigin: "center", transition: "stroke-dashoffset 0.6s ease" }}
+      />
+      <defs>
+        <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6366f1" />
+          <stop offset="100%" stopColor="#a78bfa" />
+        </linearGradient>
+      </defs>
+      <text x="26" y="30" textAnchor="middle" fill="#c4b5fd" style={{ fontSize: 11, fontWeight: 700, fontFamily: "inherit" }}>
+        {Math.round(pct * 100)}%
+      </text>
+    </svg>
+  );
+}
+
+export default function TasksPage() {
+  const { theoryId } = useParams();
+  const currentTheory = theoryId ? getTheoryById(theoryId) : null;
+  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const [filter, setFilter] = useState("Барлығы");
+  const [diffFilter, setDiffFilter] = useState("Барлығы");
+
+  useEffect(() => {
+    if (currentTheory?.taskTopics?.length) {
+      setFilter("Теория бойынша");
+      return;
+    }
+    setFilter("Барлығы");
+  }, [currentTheory]);
+
+  const cycleStatus = (id) => {
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.id !== id) return task;
+        const next = { idle: "progress", progress: "done", done: "idle" }[task.status];
+        return { ...task, status: next };
+      }),
+    );
+  };
+
+  const done = tasks.filter((task) => task.status === "done").length;
+  const inProgress = tasks.filter((task) => task.status === "progress").length;
+  const totalPts = tasks.reduce((acc, task) => acc + task.points, 0);
+  const earnedPts = tasks.filter((task) => task.status === "done").reduce((acc, task) => acc + task.points, 0);
+
+  const topics = useMemo(() => ["Барлығы", "Теория бойынша", ...Array.from(new Set(tasks.map((task) => task.topic)))], [tasks]);
+  const diffs = ["Барлығы", "Базалық", "Орташа", "Күрделі"];
+
+  const visible = tasks.filter((task) => {
+    const okTopic =
+      filter === "Барлығы" ||
+      (filter === "Теория бойынша" && currentTheory?.taskTopics?.includes(task.topic)) ||
+      task.topic === filter;
+    const okDiff = diffFilter === "Барлығы" || task.difficulty === diffFilter;
+    return okTopic && okDiff;
+  });
+
+  return (
+    <div style={{ background: "#0a0918", minHeight: "100vh", fontFamily: "'Exo 2',sans-serif", color: "#e2e8f0" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+        @keyframes fadeUp {
+          from { opacity:0; transform:translateY(22px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:#0a0918; }
+        ::-webkit-scrollbar-thumb { background:#2d2b55; border-radius:3px; }
+        .chip { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;
+          cursor:pointer; border:1.5px solid transparent; transition:all 0.18s ease;
+          font-family:inherit; white-space:nowrap; }
+        .chip.on { background:#6366f1; color:#fff; border-color:#6366f1; }
+        .chip.off { background:#ffffff; color:#64748b; border-color:rgba(167,139,250,0.28); }
+        .chip.off:hover { border-color:#6366f1; color:#4f46e5; }
+        .stat-card { background:#ffffff;
+          border:1px solid rgba(167,139,250,0.22); border-radius:14px; padding:18px 20px;
+          display:flex; align-items:center; gap:14px; flex:1; min-width:160px; }
+      `}</style>
+
+      <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#0e0d20 0%,#0a0918 100%)", borderBottom: "1px solid rgba(99,102,241,0.18)", padding: "44px 32px 32px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Breadcrumbs
+            items={
+              currentTheory
+                ? [
+                    { label: "Теория", to: "/theory" },
+                    { label: currentTheory.title, to: `/theory/${currentTheory.id}` },
+                    { label: "Тапсырмалар" },
+                  ]
+                : [{ label: "Тапсырмалар" }]
+            }
+          />
+
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
+            <div>
+              <h1 style={{ fontSize: 34, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em", background: "linear-gradient(135deg,#fff 30%,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                {currentTheory ? `${currentTheory.title} тапсырмалары` : "Тапсырмалар жинағы"}
+              </h1>
+              <p style={{ color: "#64748b", fontSize: 14, margin: 0, fontWeight: 400 }}>
+                {currentTheory ? "Осы теориялық бөлімге байланысты есептер мен тексеру тапсырмалары" : "Электр және магнетизм бөлімдері бойынша есептер"}
+              </p>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: 14, padding: "12px 20px" }}>
+              <ProgressRing done={done} total={tasks.length} />
+              <div>
+                <p style={{ margin: 0, fontSize: 12, color: "#6366f1", fontWeight: 600, letterSpacing: "0.05em" }}>ОРЫНДАЛҒАНЫ</p>
+                <p style={{ margin: "2px 0 0", fontSize: 22, fontWeight: 800, color: "#fff" }}>
+                  {done} <span style={{ color: "#4b5563", fontWeight: 400, fontSize: 16 }}>/ {tasks.length}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 }}>
+            {[
+              { icon: <Target size={18} color="#818cf8" />, label: "Барлық тапсырма", val: tasks.length, accent: "#6366f1" },
+              { icon: <Clock size={18} color="#fbbf24" />, label: "Орындалуда", val: inProgress, accent: "#f59e0b" },
+              { icon: <CheckCircle size={18} color="#4ade80" />, label: "Аяқталды", val: done, accent: "#22c55e" },
+              { icon: <Star size={18} color="#fb923c" />, label: "Жиналған ұпай", val: `${earnedPts} / ${totalPts}`, accent: "#f97316" },
+            ].map((item, index) => (
+              <div key={index} className="stat-card" style={{ borderColor: `${item.accent}22` }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: `${item.accent}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {item.icon}
+                </div>
+                <div>
+                  <p style={{ margin: 0, fontSize: 11, color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{item.label}</p>
+                  <p style={{ margin: "3px 0 0", fontSize: 20, fontWeight: 800, color: "#0f172a" }}>{item.val}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background: "rgba(248,247,255,0.95)", borderBottom: "1px solid rgba(167,139,250,0.16)", padding: "14px 32px", position: "sticky", top: 0, zIndex: 10, backdropFilter: "blur(12px)" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+          <Filter size={14} color="#6366f1" style={{ flexShrink: 0 }} />
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {topics.map((topic) => (
+              <button key={topic} className={`chip ${filter === topic ? "on" : "off"}`} onClick={() => setFilter(topic)}>
+                {topic}
+              </button>
+            ))}
+          </div>
+          <div style={{ width: 1, height: 22, background: "rgba(167,139,250,0.24)", margin: "0 6px" }} />
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {diffs.map((diff) => (
+              <button key={diff} className={`chip ${diffFilter === diff ? "on" : "off"}`} onClick={() => setDiffFilter(diff)}>
+                {diff}
+              </button>
+            ))}
+          </div>
+          <div style={{ marginLeft: "auto", color: "#64748b", fontSize: 12.5 }}>
+            <span style={{ color: "#818cf8", fontWeight: 700 }}>{visible.length}</span> / {tasks.length} тапсырма
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background: "#f8f7ff" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 32px 48px" }}>
+        {currentTheory && (
+          <div style={{ marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid rgba(167,139,250,0.18)", background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 10px 28px rgba(76,29,149,0.06)" }}>
+            <div>
+              <p style={{ margin: 0, color: "#0f172a", fontWeight: 700, fontSize: 14 }}>{currentTheory.title} бойынша тапсырмалар</p>
+              <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 12.5 }}>Теориядан кейін білімді бекіту үшін ұсынылған есептер жинағы</p>
+            </div>
+            <Link to={`/theory/${currentTheory.id}`} style={{ color: "#7c3aed", fontSize: 12.5, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}>
+              Теорияға оралу
+            </Link>
+          </div>
+        )}
+
+        {visible.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "80px 0", color: "#4b5563" }}>
+            <Layers size={40} color="#1e1b4b" style={{ margin: "0 auto 14px" }} />
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#6b7280" }}>Тапсырмалар табылмады</p>
+            <p style={{ fontSize: 13 }}>Фильтрді өзгертіп көріңіз</p>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 18 }}>
+            {visible.map((task, index) => (
+              <TaskCard key={task.id} task={task} idx={index} onCycle={cycleStatus} />
+            ))}
+          </div>
+        )}
+      </div>
+      </div>
+    </div>
+  );
+}
