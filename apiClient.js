@@ -1,4 +1,25 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+function normalizeApiBaseUrl(rawBaseUrl) {
+  if (!rawBaseUrl) {
+    return "/api";
+  }
+
+  if (rawBaseUrl.startsWith("/")) {
+    return rawBaseUrl.replace(/\/+$/, "");
+  }
+
+  try {
+    const url = new URL(rawBaseUrl);
+    const pathname = url.pathname.replace(/\/+$/, "");
+
+    url.pathname = pathname.endsWith("/api") ? pathname : `${pathname}/api`;
+
+    return url.toString().replace(/\/+$/, "");
+  } catch {
+    return rawBaseUrl.replace(/\/+$/, "");
+  }
+}
+
+const API_BASE_URL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL);
 
 export function getStoredToken() {
   return localStorage.getItem("physics_auth_token");
