@@ -341,10 +341,73 @@ export default function VirtualLabList({
           .search-input { width: 100%; }
           .filters-row { flex-wrap: wrap; }
         }
+        @media (max-width: 480px) {
+          .lab-page-header {
+            padding: 28px 16px 24px !important;
+          }
+          .lab-back-button,
+          .go-btn,
+          .filter-chip {
+            min-height: 44px;
+          }
+          .lab-back-button {
+            width: 100%;
+            margin-bottom: 16px !important;
+          }
+          .lab-filter-bar {
+            padding: 12px 16px !important;
+          }
+          .lab-filter-inner {
+            align-items: stretch !important;
+            gap: 10px !important;
+          }
+          .lab-search-wrap {
+            width: 100%;
+          }
+          .search-input {
+            width: 100% !important;
+            min-height: 46px;
+            font-size: 16px;
+          }
+          .filter-separator {
+            display: none;
+          }
+          .filters-row,
+          .difficulty-row {
+            flex-wrap: nowrap !important;
+            margin-inline: -16px;
+            overflow-x: auto;
+            padding: 0 16px 4px;
+            scrollbar-width: none;
+          }
+          .filters-row::-webkit-scrollbar,
+          .difficulty-row::-webkit-scrollbar {
+            display: none;
+          }
+          .filter-chip {
+            padding: 8px 14px;
+            flex: 0 0 auto;
+          }
+          .lab-result-count {
+            margin-left: 0 !important;
+            width: 100%;
+            text-align: right;
+          }
+          .lab-content {
+            padding: 20px 16px 36px !important;
+          }
+          .exp-card {
+            border-radius: 14px;
+            padding: 18px;
+          }
+          .exp-card:hover {
+            transform: none;
+          }
+        }
       `}</style>
 
       {/* Page Header */}
-      <div style={{
+      <div className="lab-page-header" style={{
         background: "linear-gradient(135deg, #1a1b2e 0%, #12111f 100%)",
         padding: "40px 32px 32px",
         borderBottom: "1px solid #2d2b4e",
@@ -352,6 +415,7 @@ export default function VirtualLabList({
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <button
             onClick={handleBackHome}
+            className="lab-back-button"
             style={{
               marginBottom: 18,
               padding: "8px 14px",
@@ -381,10 +445,10 @@ export default function VirtualLabList({
       </div>
 
       {/* Filters bar */}
-      <div style={{ background: "#fff", borderBottom: "1px solid #ede9fe", padding: "14px 32px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div className="lab-filter-bar" style={{ background: "#fff", borderBottom: "1px solid #ede9fe", padding: "14px 32px" }}>
+        <div className="lab-filter-inner" style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           {/* Search */}
-          <div style={{ position: "relative" }}>
+          <div className="lab-search-wrap" style={{ position: "relative" }}>
             <Search size={15} color="#9ca3af" style={{ position: "absolute", left: 13, top: "50%", transform: "translateY(-50%)" }} />
             <input
               className="search-input"
@@ -394,7 +458,7 @@ export default function VirtualLabList({
             />
           </div>
 
-          <div style={{ width: 1, height: 28, background: "#e5e7eb", margin: "0 4px" }} />
+          <div className="filter-separator" style={{ width: 1, height: 28, background: "#e5e7eb", margin: "0 4px" }} />
 
           {/* Topic filters */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }} className="filters-row">
@@ -408,10 +472,10 @@ export default function VirtualLabList({
             ))}
           </div>
 
-          <div style={{ width: 1, height: 28, background: "#e5e7eb", margin: "0 4px" }} />
+          <div className="filter-separator" style={{ width: 1, height: 28, background: "#e5e7eb", margin: "0 4px" }} />
 
           {/* Difficulty filters */}
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div className="difficulty-row" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {["Барлығы", "Базалық", "Орташа", "Күрделі"].map(d => (
               <button
                 key={d}
@@ -421,14 +485,14 @@ export default function VirtualLabList({
             ))}
           </div>
 
-          <div style={{ marginLeft: "auto", color: "#9ca3af", fontSize: 13 }}>
+          <div className="lab-result-count" style={{ marginLeft: "auto", color: "#9ca3af", fontSize: 13 }}>
             <span style={{ color: "#7c3aed", fontWeight: 700 }}>{filtered.length}</span> / {experiments.length}
           </div>
         </div>
       </div>
 
       {/* Cards grid */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px" }}>
+      <div className="lab-content" style={{ maxWidth: 1200, margin: "0 auto", padding: "32px" }}>
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 0", color: "#9ca3af" }}>
             <BookOpen size={40} color="#d1d5db" style={{ margin: "0 auto 16px" }} />

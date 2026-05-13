@@ -34,7 +34,7 @@ export default function Layout() {
     : navItems;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0918] font-['Exo_2'] text-slate-100">
+    <div className="flex h-screen overflow-hidden bg-[#0a0918] font-['Exo_2'] text-slate-100 max-[480px]:h-dvh">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
         .sidebar-shell {
@@ -75,10 +75,32 @@ export default function Layout() {
             position: fixed;
             inset: 0 auto 0 0;
             z-index: 40;
+            width: min(20rem, 86vw);
             transform: translateX(-100%);
           }
           .sidebar-shell.mobile-open {
             transform: translateX(0);
+          }
+        }
+        @media (max-width: 480px) {
+          .mobile-app-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            padding: 0.75rem 1rem;
+          }
+          .mobile-menu-button {
+            min-height: 44px;
+            min-width: 44px;
+            justify-content: center;
+            border-radius: 0.875rem;
+            background: rgba(124, 58, 237, 0.12);
+          }
+          .sidebar-shell {
+            width: min(19rem, 88vw);
+          }
+          .sidebar-shell nav a {
+            min-height: 48px;
           }
         }
       `}</style>
@@ -108,7 +130,8 @@ export default function Layout() {
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="ml-auto text-slate-500 transition hover:text-slate-200 md:hidden"
+                aria-label="Жабу"
+                className="ml-auto flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white/5 hover:text-slate-200 md:hidden"
               >
                 <X size={18} />
               </button>
@@ -176,8 +199,14 @@ export default function Layout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="flex items-center gap-3 border-b border-violet-500/10 bg-[#110f20] px-4 py-3 md:hidden">
-          <button type="button" onClick={() => setSidebarOpen(true)} className="text-violet-300 transition hover:text-violet-200">
+        <div className="mobile-app-header flex items-center gap-3 border-b border-violet-500/10 bg-[#110f20] px-4 py-3 md:hidden">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Навигацияны ашу"
+            aria-expanded={sidebarOpen}
+            className="mobile-menu-button inline-flex text-violet-300 transition hover:text-violet-200"
+          >
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">

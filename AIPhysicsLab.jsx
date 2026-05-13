@@ -160,43 +160,43 @@ export default function AIPhysicsLab({ onNavigate = () => {}, embedded = false }
       <main className={`${embedded ? "min-h-screen w-full overflow-y-auto" : "flex-1 overflow-y-auto"} text-slate-100`}>
         <section className="relative overflow-hidden border-b border-violet-500/10 bg-[radial-gradient(circle_at_75%_50%,rgba(76,29,149,0.34),transparent_32%),linear-gradient(135deg,#050914_0%,#090d1d_55%,#080916_100%)]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
-          <div className="relative mx-auto grid min-h-[78vh] max-w-7xl gap-10 px-8 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="relative mx-auto grid min-h-[78vh] max-w-7xl gap-10 px-8 py-16 max-[480px]:min-h-0 max-[480px]:gap-7 max-[480px]:px-4 max-[480px]:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="max-w-2xl">
-              <h1 className="text-6xl font-black leading-[0.9] tracking-[-0.04em] text-white md:text-7xl xl:text-[6.5rem]">
+              <h1 className="text-6xl font-black leading-[0.9] tracking-[-0.04em] text-white max-[480px]:text-[3.25rem] md:text-7xl xl:text-[6.5rem]">
                 AI-Physics
                 <span className="mt-2 block bg-gradient-to-r from-violet-300 via-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">
                   lab
                 </span>
               </h1>
 
-              <p className="mt-6 text-2xl font-medium uppercase tracking-[0.22em] text-indigo-300">Электр және магнетизм</p>
+              <p className="mt-6 text-2xl font-medium uppercase tracking-[0.22em] text-indigo-300 max-[480px]:text-sm max-[480px]:tracking-[0.16em]">Электр және магнетизм</p>
 
-              <div className="mt-10 flex flex-wrap gap-4">
+              <div className="mt-10 flex flex-wrap gap-4 max-[480px]:mt-7 max-[480px]:flex-col">
                 <button
                   onClick={() => goTo("labs")}
-                  className="inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-7 py-4 text-base font-bold text-white shadow-[0_18px_34px_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-7 py-4 text-base font-bold text-white shadow-[0_18px_34px_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5 max-[480px]:w-full"
                 >
                   <Play size={18} fill="white" />
                   Зертхананы бастау
                 </button>
                 <button
                   onClick={() => handleNavChange("theory")}
-                  className="inline-flex items-center gap-3 rounded-2xl border border-violet-400/20 bg-transparent px-7 py-4 text-base font-semibold text-violet-200 transition hover:bg-violet-500/10"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl border border-violet-400/20 bg-transparent px-7 py-4 text-base font-semibold text-violet-200 transition hover:bg-violet-500/10 max-[480px]:w-full"
                 >
                   <BookOpen size={18} />
                   Теорияны оқу
                 </button>
               </div>
 
-              <div className="mt-12 flex flex-wrap gap-10">
+              <div className="mt-12 flex flex-wrap gap-10 max-[480px]:mt-8 max-[480px]:grid max-[480px]:grid-cols-3 max-[480px]:gap-3">
                 {[
                   { value: "24+", label: "Тәжірибе" },
                   { value: "6", label: "Бөлім" },
                   { value: "AI", label: "Нұсқаулық" },
                 ].map((item) => (
-                  <div key={item.label}>
-                    <p className="text-4xl font-black text-white">{item.value}</p>
-                    <p className="mt-2 text-sm text-slate-500">{item.label}</p>
+                  <div key={item.label} className="max-[480px]:rounded-2xl max-[480px]:border max-[480px]:border-violet-400/15 max-[480px]:bg-white/5 max-[480px]:p-3 max-[480px]:text-center">
+                    <p className="text-4xl font-black text-white max-[480px]:text-2xl">{item.value}</p>
+                    <p className="mt-2 text-sm text-slate-500 max-[480px]:text-[11px]">{item.label}</p>
                   </div>
                 ))}
               </div>
@@ -209,14 +209,14 @@ export default function AIPhysicsLab({ onNavigate = () => {}, embedded = false }
           </div>
         </section>
 
-        <section className="bg-[#f8f7ff] px-8 py-14">
+        <section className="bg-[#f8f7ff] px-8 py-14 max-[480px]:px-4 max-[480px]:py-9">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-10 flex items-center justify-between gap-4">
+            <div className="mb-10 flex items-center justify-between gap-4 max-[480px]:mb-6 max-[480px]:items-end">
               <div>
-                <h2 className="text-3xl font-black tracking-[-0.02em] text-slate-900">Зертхана модульдері</h2>
+                <h2 className="text-3xl font-black tracking-[-0.02em] text-slate-900 max-[480px]:text-2xl">Зертхана модульдері</h2>
                 <p className="mt-2 text-sm text-slate-500">Тақырыпты таңдап, зерттеуді бастаңыз</p>
               </div>
-              <button className="inline-flex items-center gap-2 text-sm font-semibold text-violet-500 transition hover:text-violet-600">
+              <button className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap text-sm font-semibold text-violet-500 transition hover:text-violet-600">
                 Барлығы <ChevronRight size={15} />
               </button>
             </div>
@@ -228,7 +228,7 @@ export default function AIPhysicsLab({ onNavigate = () => {}, embedded = false }
                   <button
                     key={card.title}
                     onClick={() => goTo(card.title === "Электр тізбектері" ? "ohms" : "labs")}
-                    className="group rounded-[26px] border border-violet-200 bg-white p-6 text-left shadow-[0_14px_30px_rgba(76,29,149,0.08)] transition hover:-translate-y-1.5 hover:border-violet-300"
+                    className="group min-h-[44px] rounded-[26px] border border-violet-200 bg-white p-6 text-left shadow-[0_14px_30px_rgba(76,29,149,0.08)] transition hover:-translate-y-1.5 hover:border-violet-300 max-[480px]:rounded-2xl max-[480px]:p-5"
                   >
                     <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${card.surface}`}>
                       <Icon size={22} className={card.iconColor} />

@@ -62,6 +62,7 @@ function StatusBtn({ status, onClick }) {
   return (
     <button
       onClick={onClick}
+      className="status-btn"
       style={{
         display: "flex",
         alignItems: "center",
@@ -101,6 +102,7 @@ function TaskCard({ task, idx, onCycle }) {
 
   return (
     <div
+      className="task-card"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -304,9 +306,70 @@ export default function TasksPage() {
         .stat-card { background:#ffffff;
           border:1px solid rgba(167,139,250,0.22); border-radius:14px; padding:18px 20px;
           display:flex; align-items:center; gap:14px; flex:1; min-width:160px; }
+        @media (max-width: 480px) {
+          .tasks-hero {
+            padding: 28px 16px 24px !important;
+          }
+          .tasks-title {
+            font-size: 26px !important;
+            line-height: 1.12 !important;
+          }
+          .tasks-progress {
+            width: 100%;
+            justify-content: space-between;
+            padding: 12px 14px !important;
+          }
+          .stat-card {
+            min-width: calc(50% - 6px) !important;
+            padding: 14px !important;
+            gap: 10px !important;
+          }
+          .tasks-filter-bar {
+            position: static !important;
+            padding: 12px 16px !important;
+          }
+          .tasks-filter-inner {
+            align-items: stretch !important;
+          }
+          .tasks-filter-group {
+            flex-wrap: nowrap !important;
+            margin-inline: -16px;
+            overflow-x: auto;
+            padding: 0 16px 4px;
+            scrollbar-width: none;
+          }
+          .tasks-filter-group::-webkit-scrollbar {
+            display: none;
+          }
+          .chip {
+            min-height: 44px;
+            flex: 0 0 auto;
+            padding: 8px 14px;
+          }
+          .tasks-count {
+            margin-left: 0 !important;
+            width: 100%;
+            text-align: right;
+          }
+          .tasks-content {
+            padding: 20px 16px 36px !important;
+          }
+          .theory-task-banner {
+            align-items: stretch !important;
+            flex-direction: column;
+          }
+          .task-card {
+            padding: 18px !important;
+            transform: none !important;
+          }
+          .status-btn {
+            min-height: 44px;
+            padding: 9px 14px !important;
+          }
+        }
       `}</style>
 
-      <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#0e0d20 0%,#0a0918 100%)", borderBottom: "1px solid rgba(99,102,241,0.18)", padding: "44px 32px 32px" }}>
+      <div className="tasks-hero" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#0e0d20 0%,#0a0918 100%)", borderBottom: "1px solid rgba(99,102,241,0.18)", padding: "44px 32px 32px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Breadcrumbs
             items={
@@ -322,7 +385,7 @@ export default function TasksPage() {
 
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
             <div>
-              <h1 style={{ fontSize: 34, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em", background: "linear-gradient(135deg,#fff 30%,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              <h1 className="tasks-title" style={{ fontSize: 34, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em", background: "linear-gradient(135deg,#fff 30%,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {currentTheory ? `${currentTheory.title} тапсырмалары` : "Тапсырмалар жинағы"}
               </h1>
               <p style={{ color: "#64748b", fontSize: 14, margin: 0, fontWeight: 400 }}>
@@ -330,7 +393,7 @@ export default function TasksPage() {
               </p>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: 14, padding: "12px 20px" }}>
+            <div className="tasks-progress" style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: 14, padding: "12px 20px" }}>
               <ProgressRing done={done} total={tasks.length} />
               <div>
                 <p style={{ margin: 0, fontSize: 12, color: "#6366f1", fontWeight: 600, letterSpacing: "0.05em" }}>ОРЫНДАЛҒАНЫ</p>
@@ -362,10 +425,10 @@ export default function TasksPage() {
         </div>
       </div>
 
-      <div style={{ background: "rgba(248,247,255,0.95)", borderBottom: "1px solid rgba(167,139,250,0.16)", padding: "14px 32px", position: "sticky", top: 0, zIndex: 10, backdropFilter: "blur(12px)" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+      <div className="tasks-filter-bar" style={{ background: "rgba(248,247,255,0.95)", borderBottom: "1px solid rgba(167,139,250,0.16)", padding: "14px 32px", position: "sticky", top: 0, zIndex: 10, backdropFilter: "blur(12px)" }}>
+        <div className="tasks-filter-inner" style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
           <Filter size={14} color="#6366f1" style={{ flexShrink: 0 }} />
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div className="tasks-filter-group" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {topics.map((topic) => (
               <button key={topic} className={`chip ${filter === topic ? "on" : "off"}`} onClick={() => setFilter(topic)}>
                 {topic}
@@ -373,23 +436,23 @@ export default function TasksPage() {
             ))}
           </div>
           <div style={{ width: 1, height: 22, background: "rgba(167,139,250,0.24)", margin: "0 6px" }} />
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div className="tasks-filter-group" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {diffs.map((diff) => (
               <button key={diff} className={`chip ${diffFilter === diff ? "on" : "off"}`} onClick={() => setDiffFilter(diff)}>
                 {diff}
               </button>
             ))}
           </div>
-          <div style={{ marginLeft: "auto", color: "#64748b", fontSize: 12.5 }}>
+          <div className="tasks-count" style={{ marginLeft: "auto", color: "#64748b", fontSize: 12.5 }}>
             <span style={{ color: "#818cf8", fontWeight: 700 }}>{visible.length}</span> / {tasks.length} тапсырма
           </div>
         </div>
       </div>
 
       <div style={{ background: "#f8f7ff" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 32px 48px" }}>
+      <div className="tasks-content" style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 32px 48px" }}>
         {currentTheory && (
-          <div style={{ marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid rgba(167,139,250,0.18)", background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 10px 28px rgba(76,29,149,0.06)" }}>
+          <div className="theory-task-banner" style={{ marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid rgba(167,139,250,0.18)", background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 10px 28px rgba(76,29,149,0.06)" }}>
             <div>
               <p style={{ margin: 0, color: "#0f172a", fontWeight: 700, fontSize: 14 }}>{currentTheory.title} бойынша тапсырмалар</p>
               <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 12.5 }}>Теориядан кейін білімді бекіту үшін ұсынылған есептер жинағы</p>

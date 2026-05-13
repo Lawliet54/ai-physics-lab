@@ -12,7 +12,7 @@ function TheoryCard({ item, index }) {
 
   return (
     <article
-      className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-violet-200 bg-white p-6 shadow-[0_16px_36px_rgba(76,29,149,0.08)] transition duration-300 hover:-translate-y-1.5 hover:border-violet-300 hover:shadow-[0_20px_48px_rgba(76,29,149,0.14)]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-violet-200 bg-white p-6 shadow-[0_16px_36px_rgba(76,29,149,0.08)] transition duration-300 hover:-translate-y-1.5 hover:border-violet-300 hover:shadow-[0_20px_48px_rgba(76,29,149,0.14)] max-[480px]:rounded-2xl max-[480px]:p-5 max-[480px]:hover:translate-y-0"
       style={{ animationDelay: `${index * 45}ms` }}
     >
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/70 to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-100" />
@@ -76,7 +76,7 @@ function TheoryCard({ item, index }) {
         <button
           type="button"
           onClick={() => navigate(`/theory/${item.id}`)}
-          className="flex-1 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100"
+          className="min-h-12 flex-1 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100"
         >
           Теорияны оқу
         </button>
@@ -84,7 +84,7 @@ function TheoryCard({ item, index }) {
           type="button"
           onClick={() => navigate(`/theory/${item.id}/tasks`)}
           aria-label={`${item.title} тапсырмалары`}
-          className="flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-200 bg-white text-slate-700 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-200 bg-white text-slate-700 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700"
         >
           <ClipboardList size={18} />
         </button>
@@ -115,7 +115,7 @@ export default function TheoryPage() {
   return (
     <div className="min-h-screen bg-[#0a0918] text-slate-100">
       <div className="border-b border-violet-500/15 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.18),_transparent_52%),linear-gradient(180deg,#100f24_0%,#0a0918_100%)]">
-        <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+        <div className="mx-auto max-w-6xl px-6 py-10 max-[480px]:px-4 max-[480px]:py-8 lg:px-8">
           <Breadcrumbs items={[{ label: "Теория" }]} />
 
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
@@ -124,7 +124,7 @@ export default function TheoryPage() {
                 <FlaskConical size={14} />
                 AI-Physics Lab
               </div>
-              <h1 className="text-4xl font-black tracking-[-0.03em] text-white md:text-5xl">
+              <h1 className="text-4xl font-black tracking-[-0.03em] text-white max-[480px]:text-3xl md:text-5xl">
                 Физика теориясы
               </h1>
               <p className="mt-4 text-sm leading-7 text-slate-400">
@@ -132,7 +132,7 @@ export default function TheoryPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 rounded-3xl border border-violet-500/15 bg-white/5 p-4 backdrop-blur">
+            <div className="grid grid-cols-2 gap-3 rounded-3xl border border-violet-500/15 bg-white/5 p-4 backdrop-blur max-[480px]:w-full max-[480px]:rounded-2xl max-[480px]:p-3">
               <div className="rounded-2xl border border-white/8 bg-[#120f25] px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.12em] text-slate-500">Бөлімдер</div>
                 <div className="mt-1 text-2xl font-bold text-white">{THEORY_DATA.length}</div>
@@ -151,7 +151,7 @@ export default function TheoryPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Заңдарды іздеу..."
-                className="w-full rounded-2xl border border-violet-500/20 bg-[#120f25] py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400/40 focus:ring-2 focus:ring-violet-500/20"
+                className="min-h-12 w-full rounded-2xl border border-violet-500/20 bg-[#120f25] py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-400/40 focus:ring-2 focus:ring-violet-500/20 max-[480px]:text-base"
               />
             </div>
           </div>
@@ -159,15 +159,15 @@ export default function TheoryPage() {
       </div>
 
       <div className="sticky top-0 z-20 border-b border-violet-500/10 bg-[#0d0b1d]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-6 py-4 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-6 py-4 max-[480px]:px-4 lg:px-8">
           <SlidersHorizontal size={14} className="text-violet-300" />
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-[480px]:-mx-4 max-[480px]:flex-nowrap max-[480px]:overflow-x-auto max-[480px]:px-4 max-[480px]:pb-1">
             {topics.map((topic) => (
               <button
                 key={topic}
                 type="button"
                 onClick={() => setTopicFilter(topic)}
-                className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+                className={`min-h-11 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold transition ${
                   topicFilter === topic
                     ? "border-violet-400/50 bg-violet-500/20 text-white"
                     : "border-violet-500/15 bg-white/5 text-slate-400 hover:border-violet-400/25 hover:text-slate-200"
@@ -180,13 +180,13 @@ export default function TheoryPage() {
 
           <div className="mx-2 hidden h-6 w-px bg-violet-500/10 md:block" />
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-[480px]:-mx-4 max-[480px]:flex-nowrap max-[480px]:overflow-x-auto max-[480px]:px-4 max-[480px]:pb-1">
             {complexities.map((complexity) => (
               <button
                 key={complexity}
                 type="button"
                 onClick={() => setComplexityFilter(complexity)}
-                className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+                className={`min-h-11 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold transition ${
                   complexityFilter === complexity
                     ? "border-indigo-400/50 bg-indigo-500/20 text-white"
                     : "border-violet-500/15 bg-white/5 text-slate-400 hover:border-indigo-400/25 hover:text-slate-200"
@@ -200,7 +200,7 @@ export default function TheoryPage() {
       </div>
 
       <div className="bg-[#f8f7ff]">
-        <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+        <div className="mx-auto max-w-6xl px-6 py-10 max-[480px]:px-4 max-[480px]:py-7 lg:px-8">
         {filteredItems.length === 0 ? (
           <div className="rounded-3xl border border-violet-200 bg-white px-6 py-16 text-center shadow-[0_16px_40px_rgba(76,29,149,0.08)]">
             <p className="text-lg font-semibold text-slate-900">Тақырып табылмады</p>

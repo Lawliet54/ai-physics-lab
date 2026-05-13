@@ -28,21 +28,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0918] px-5 font-['Exo_2'] text-slate-100">
+    <div className="flex min-h-screen items-center justify-center bg-[#0a0918] px-5 py-8 font-['Exo_2'] text-slate-100 max-[480px]:items-start max-[480px]:px-4 max-[480px]:py-6">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap');
       `}</style>
 
       <form
         onSubmit={submit}
-        className="w-full max-w-[420px] rounded-[28px] border border-violet-400/15 bg-[linear-gradient(180deg,#17142b_0%,#100e20_100%)] p-7 shadow-[0_26px_80px_rgba(0,0,0,0.38)]"
+        className="w-full max-w-[420px] rounded-[28px] border border-violet-400/15 bg-[linear-gradient(180deg,#17142b_0%,#100e20_100%)] p-7 shadow-[0_26px_80px_rgba(0,0,0,0.38)] max-[480px]:rounded-2xl max-[480px]:p-5"
       >
-        <div className="mb-7 flex items-center gap-4">
+        <div className="mb-7 flex items-center gap-4 max-[480px]:mb-6 max-[480px]:gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 shadow-[0_0_24px_rgba(124,58,237,0.45)]">
             <Atom size={22} />
           </div>
           <div>
-            <h1 className="text-2xl font-black tracking-[-0.02em] text-white">AI-Physics Lab</h1>
+            <h1 className="text-2xl font-black tracking-[-0.02em] text-white max-[480px]:text-xl">AI-Physics Lab</h1>
             <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">Жүйеге кіру</p>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function LoginPage() {
         <div className="space-y-4">
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Логин</span>
-            <div className="flex items-center gap-3 rounded-2xl border border-violet-400/15 bg-white/5 px-4 py-3 focus-within:border-violet-400/45">
+            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-violet-400/15 bg-white/5 px-4 py-3 focus-within:border-violet-400/45">
               <UserRound size={18} className="text-violet-300" />
               <input
                 value={form.login}
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Пароль</span>
-            <div className="flex items-center gap-3 rounded-2xl border border-violet-400/15 bg-white/5 px-4 py-3 focus-within:border-violet-400/45">
+            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-violet-400/15 bg-white/5 px-4 py-3 focus-within:border-violet-400/45">
               <Lock size={18} className="text-violet-300" />
               <input
                 type="password"
