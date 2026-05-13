@@ -11,6 +11,8 @@ body,
 
 body {
   min-height: 100vh;
+  color: #0f172a;
+  background: #f4f1ff;
 }
 
 * {
@@ -32,6 +34,22 @@ textarea {
   touch-action: manipulation;
 }
 
+textarea {
+  line-height: 1.45;
+}
+
+.app-panel {
+  border-radius: 24px;
+}
+
+.app-panel-header {
+  padding: 0.875rem 1rem;
+}
+
+.app-panel-content {
+  padding: 1rem;
+}
+
 @media (max-width: 480px) {
   html,
   body,
@@ -45,5 +63,17 @@ textarea {
   select,
   textarea {
     min-height: 44px;
+  }
+
+  .app-panel {
+    border-radius: 20px;
+  }
+
+  .app-panel-header {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .app-panel-content {
+    padding: 0.875rem;
   }
 }

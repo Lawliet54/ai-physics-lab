@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRightLeft, BookOpen, Info, RotateCcw, Zap } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRightLeft, Info, RotateCcw, Zap } from "lucide-react";
 import LabPageLayout, { ControlPanel, HintList, Panel } from "./LabPageLayout";
 
 const COULOMB_CONSTANT = 8.99e9;
@@ -337,16 +336,17 @@ export default function CoulombsLawLab() {
       topic="Электростатика"
       title="Кулон заңын тәжірибелік модельдеу"
       subtitle="Екі зарядтың шамасын, ортаны және арақашықтықты өзгертіп, Кулон заңындағы күштің қалай өзгеретінін бақылаңыз."
-      formula="F = k · q₁q₂ / r²"
+      formula="F = k|q₁q₂| / r²"
+      theoryId="electric-charge"
       formulaContent={
-        <div className="flex items-center justify-center gap-1.5 text-[1.1rem] font-black italic tracking-[-0.03em] text-amber-400 md:text-[1.2rem]">
+        <div className="flex items-center justify-center gap-1.5 text-[1.1rem] font-black italic tracking-[-0.03em] text-amber-500 md:text-[1.2rem]">
           <span>F</span>
           <span>= k</span>
-          <span className="text-amber-300">·</span>
-          <span className="inline-flex flex-col items-center leading-none text-white">
-            <span className="border-b-2 border-amber-300 px-1.5 pb-0.5">
+          <span className="text-amber-500">·</span>
+          <span className="inline-flex flex-col items-center leading-none text-slate-900">
+            <span className="border-b-2 border-amber-400 px-1.5 pb-0.5">
               <span>q₁</span>
-              <span className="px-0.5 text-amber-300">·</span>
+              <span className="px-0.5 text-amber-500">·</span>
               <span>q₂</span>
             </span>
             <span className="pt-0.5">r²</span>
@@ -355,15 +355,6 @@ export default function CoulombsLawLab() {
       }
       difficulty="Базалық"
       accent="#f59e0b"
-      headerAction={
-        <Link
-          to="/theory"
-          className="inline-flex items-center gap-2 rounded-2xl border border-violet-300/25 bg-violet-500/10 px-5 py-3 text-sm font-bold text-violet-100 transition hover:border-violet-200/40 hover:bg-violet-500/20"
-        >
-          <BookOpen size={16} />
-          Теория
-        </Link>
-      }
       sidebar={
         <ControlPanel accent="#f59e0b" className={compactPanelClass}>
           <RangeInput label="Заряд q₁" value={q1} onChange={(value) => setQ1(clamp(value, MIN_CHARGE, MAX_CHARGE))} color="red" />

@@ -6,13 +6,13 @@ const KB = [
     keys: ["ом", "ohm", "кернеу", "ток", "кедергі", "резистор"],
     answer: `**Ом заңы** — электр тізбегінің іргелі заңы.
 
-**Формула:** I = V / R
+**Формула:** I = U / R
 
 - **I** — ток күші (Ампер, А)
-- **V** — кернеу (Вольт, В)
+- **U** — кернеу (Вольт, В)
 - **R** — кедергі (Ом, Ω)
 
-**Мысал:** Егер V = 12 В, R = 4 Ом болса:
+**Мысал:** Егер U = 12 В, R = 4 Ом болса:
 I = 12 / 4 = **3 А**
 
 **Маңызды:** Ток кернеуге тура, кедергіге кері пропорционал. Кедергі артса — ток азаяды.`,
@@ -53,10 +53,10 @@ I = 12 / 4 = **3 А**
     keys: ["электр өрісі", "кернеулік", "потенциал"],
     answer: `**Электр өрісі** — зарядтардың өзара әрекет ортасы.
 
-**Кернеулік:** E = F / q = k · Q / r²
+**Кернеулік:** E = F / q = kQ / r²
 (В/м немесе Н/Кл)
 
-**Потенциал:** φ = k · Q / r
+**Потенциал:** φ = kQ / r
 (Вольт, В)
 
 **Байланыс:** E = -dφ/dr
@@ -68,7 +68,7 @@ I = 12 / 4 = **3 А**
     keys: ["конденсатор", "сыйымдылық"],
     answer: `**Конденсатор** — электр зарядын жинақтайтын құрылғы.
 
-**Сыйымдылық:** C = Q / U = ε₀ · ε · S / d
+**Сыйымдылық:** C = Q / U = εε₀S / d
 
 - **C** — сыйымдылық (Фарад, Ф)
 - **Q** — заряд (Кл)
@@ -76,7 +76,7 @@ I = 12 / 4 = **3 А**
 - **S** — пластина ауданы (м²)
 - **d** — пластиналар арасындағы қашықтық (м)
 
-**Энергия:** W = C·U² / 2
+**Энергия:** W = CU² / 2
 
 **Тізбектей жалғанғанда:** 1/C = 1/C₁ + 1/C₂ + ...
 **Параллель жалғанғанда:** C = C₁ + C₂ + ...`,
@@ -101,17 +101,17 @@ A = 100 × 10 × 3600 = **3 600 000 Дж = 1 кВт·сағ**
     keys: ["генератор", "электромагниттік", "фарадей"],
     answer: `**Электромагниттік индукция** — Фарадей заңы
 
-**ЭМИ ЭҚК:** ε = -dΦ/dt = -N · dΦ/dt
+**ЭМИ ЭҚК:** ε = -ΔΦ / Δt
 
 - **Φ** — магнит ағыны (Вебер, Вб)
 - **N** — орам саны
 - **ε** — ЭҚК (Вольт, В)
 
-**Магнит ағыны:** Φ = B · S · cos(α)
+**Магнит ағыны:** Φ = BS cos(α)
 
 **Генератор принципі:** Тұйық контурдың магнит өрісінде айналуы айнымалы ток тудырады.
 
-ε = N · B · S · ω · sin(ωt)
+ε = NBSω sin(ωt)
 мұндағы ω — айналу бұрыштық жылдамдығы.`,
   },
   {
@@ -125,7 +125,7 @@ A = 100 × 10 × 3600 = **3 600 000 Дж = 1 кВт·сағ**
 - **r** — ішкі кедергі, Ом
 - **I** — ток күші, А
 
-**Клемма кернеуі:** U = ε - I·r
+**Клемма кернеуі:** U = ε - Ir
 
 **Қысқа тұйықталу тогы:** I_кт = ε / r
 (R = 0 болғандағы максимал ток — өте қауіпті!)
@@ -231,7 +231,7 @@ export default function AIChatAssistant() {
         `Кешіріңіз, **"${userText}"** тақырыбы бойынша нақты ақпарат таба алмадым.
 
 Мына тақырыптар бойынша жақсы жауап бере аламын:
-- Ом заңы (I = V/R)
+- Ом заңы (I = U/R)
 - Кулон заңы (F = k·q₁q₂/r²)
 - Конденсаторлар мен сыйымдылық
 - Магнетизм және Лоренц күші
@@ -262,7 +262,7 @@ export default function AIChatAssistant() {
   const formatTime = (date) => date.toLocaleTimeString("kk-KZ", { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0918] text-slate-100">
+    <div className="flex min-h-screen flex-col bg-[#f4f1ff] text-slate-900">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
         * { box-sizing: border-box; font-family: 'Exo 2', sans-serif; }
@@ -277,27 +277,27 @@ export default function AIChatAssistant() {
         .message-fade { animation: fadeUp .35s ease both; }
       `}</style>
 
-      <header className="border-b border-violet-500/12 bg-[linear-gradient(180deg,#18152c_0%,#11101f_100%)]">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 py-4">
+      <header className="border-b border-violet-200 bg-[linear-gradient(180deg,#faf7ff_0%,#f1eeff_100%)]">
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-5 py-3.5 max-[480px]:px-4 max-[480px]:py-3">
           <div className="flex items-center gap-4">
             <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 shadow-[0_0_24px_rgba(124,58,237,0.35)]">
               <Bot size={21} className="text-white" />
-              <span className="absolute bottom-1.5 left-1.5 h-3 w-3 rounded-full border-2 border-[#18152c] bg-emerald-400" />
+              <span className="absolute bottom-1.5 left-1.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
             </div>
             <div>
-              <h1 className="text-[1.7rem] font-black tracking-[-0.02em] text-white">AI Физика Көмекшісі</h1>
+              <h1 className="text-[1.55rem] font-black tracking-[-0.02em] text-slate-950 max-[480px]:text-[1.15rem]">AI Физика Көмекшісі</h1>
               <p className="mt-1 text-[13px] font-semibold text-emerald-400">● Желіде · Жауапқа дайын</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-xl border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-200 md:flex">
+            <div className="hidden items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 md:flex">
               <Atom size={15} />
               Электр & Магнетизм
             </div>
             <button
               onClick={clearChat}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-400 transition hover:border-violet-400/20 hover:bg-violet-500/8 hover:text-slate-200"
+              className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-violet-300 hover:bg-violet-50 hover:text-slate-900"
             >
               <RotateCcw size={15} />
               Тазалау
@@ -307,8 +307,8 @@ export default function AIChatAssistant() {
       </header>
 
       <main className="flex-1 bg-[#f8f7ff]">
-        <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-8">
-        <div className="flex-1 overflow-y-auto py-7">
+        <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-6 max-[480px]:px-4">
+        <div className="flex-1 overflow-y-auto py-5 max-[480px]:py-4">
           <div className="mx-auto flex w-full max-w-7xl gap-4">
             <div className="hidden shrink-0 lg:block">
               <div className="sticky top-7 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-200 bg-white text-violet-600 shadow-[0_10px_24px_rgba(76,29,149,0.12)]">
@@ -316,7 +316,7 @@ export default function AIChatAssistant() {
               </div>
             </div>
 
-            <div className="min-w-0 flex-1 space-y-5">
+            <div className="min-w-0 flex-1 space-y-4">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -329,7 +329,7 @@ export default function AIChatAssistant() {
                   )}
 
                   <div
-                    className={`max-w-[820px] rounded-[24px] border px-5 py-4 shadow-[0_18px_36px_rgba(0,0,0,0.24)] ${
+                    className={`max-w-[820px] rounded-[22px] border px-4 py-3.5 shadow-[0_14px_28px_rgba(0,0,0,0.14)] ${
                       msg.role === "assistant"
                         ? "border-violet-200 bg-white"
                         : "border-indigo-200 bg-indigo-50/80"
@@ -360,7 +360,7 @@ export default function AIChatAssistant() {
                   <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white shadow-[0_0_18px_rgba(124,58,237,0.35)]">
                     <Bot size={18} />
                   </div>
-                    <div className="rounded-[24px] border border-violet-200 bg-white px-5 py-4 shadow-[0_18px_36px_rgba(76,29,149,0.12)]">
+                    <div className="rounded-[22px] border border-violet-200 bg-white px-4 py-3.5 shadow-[0_14px_28px_rgba(76,29,149,0.1)]">
                     <div className="flex items-center gap-3">
                       <ThinkingDots />
                       <span className="text-sm text-slate-500">Жауап дайындалуда...</span>
@@ -375,7 +375,7 @@ export default function AIChatAssistant() {
         </div>
 
         {messages.length <= 1 && (
-          <section className="border-t border-violet-100 py-5">
+          <section className="border-t border-violet-100 py-4">
             <div className="mx-auto max-w-7xl">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-600">Жылдам сұрақтар</p>
               <div className="flex flex-wrap gap-2.5">
@@ -394,9 +394,9 @@ export default function AIChatAssistant() {
           </section>
         )}
 
-        <footer className="border-t border-violet-100 py-3">
+        <footer className="border-t border-violet-100 py-2.5">
           <div className="mx-auto max-w-7xl">
-            <div className="rounded-[24px] border border-violet-200 bg-white p-3 shadow-[0_16px_40px_rgba(76,29,149,0.08)]">
+            <div className="rounded-[22px] border border-violet-200 bg-white p-2.5 shadow-[0_14px_28px_rgba(76,29,149,0.08)]">
               <div className="flex items-end gap-3">
                 <textarea
                   value={input}

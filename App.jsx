@@ -22,7 +22,7 @@ function ProtectedRoute({ children, adminOnly = false }) {
   const { user, booting, isAdmin } = useAuth();
 
   if (booting) {
-    return <div className="min-h-screen bg-[#0a0918]" />;
+    return <div className="min-h-screen bg-[#f4f1ff]" />;
   }
 
   if (!user) {

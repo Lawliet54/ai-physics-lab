@@ -121,6 +121,7 @@ export default function OhmsLawLab() {
       title="Ом заңын микроскопиялық деңгейде зерттеу"
       subtitle="Кернеу артқанда электрондар қалай тезірек қозғалатынын, ал кедергі өскенде атомдармен соқтығысу неге көбейетінін бір мезетте көріңіз."
       formula="I = U / R"
+      theoryId="capacitors"
       difficulty="Базалық"
       duration="20 мин"
       accent="#f43f5e"

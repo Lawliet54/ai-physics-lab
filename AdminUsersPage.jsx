@@ -77,18 +77,18 @@ export default function AdminUsersPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] font-['Exo_2'] text-slate-900">
-      <section className="border-b border-violet-500/15 bg-[linear-gradient(180deg,#141229_0%,#0d0b1c_100%)] px-8 py-8 text-white">
+      <section className="border-b border-violet-200 bg-[linear-gradient(180deg,#faf7ff_0%,#f1eeff_100%)] px-8 py-8 text-slate-900">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-violet-300">Admin panel</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-violet-600">Admin panel</p>
               <h1 className="text-3xl font-black tracking-[-0.02em]">Аккаунттарды басқару</h1>
-              <p className="mt-2 text-sm text-slate-400">Қолданушыларды тек админ ашады және уақытша пароль береді.</p>
+              <p className="mt-2 text-sm text-slate-600">Қолданушыларды тек админ ашады және уақытша пароль береді.</p>
             </div>
             <button
               type="button"
               onClick={loadUsers}
-              className="inline-flex items-center gap-2 rounded-2xl border border-violet-400/20 bg-white/5 px-4 py-2 text-sm font-semibold text-violet-100 transition hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-2xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50"
             >
               <RefreshCw size={15} />
               Жаңарту
@@ -102,9 +102,9 @@ export default function AdminUsersPage() {
               ["Мұғалім", stats.teachers],
               ["Оқушы", stats.students],
             ].map(([label, value]) => (
-              <div key={label} className="rounded-2xl border border-violet-400/15 bg-white/5 px-5 py-4">
+              <div key={label} className="rounded-2xl border border-violet-200 bg-white/75 px-5 py-4">
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
-                <p className="mt-1 text-2xl font-black text-white">{value}</p>
+                <p className="mt-1 text-2xl font-black text-slate-900">{value}</p>
               </div>
             ))}
           </div>

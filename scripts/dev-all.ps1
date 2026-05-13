@@ -1,5 +1,18 @@
 $root = Split-Path -Parent $PSScriptRoot
 $backend = Join-Path $root "backend"
+$sqlite = Join-Path $backend "database\\database.sqlite"
+
+if (-not (Test-Path $sqlite)) {
+    New-Item -ItemType File -Path $sqlite -Force | Out-Null
+}
+
+Push-Location $backend
+try {
+    php artisan config:clear | Out-Null
+    php artisan migrate --force | Out-Null
+} finally {
+    Pop-Location
+}
 
 $frontendListeners = Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue
 foreach ($listener in $frontendListeners) {
@@ -21,7 +34,7 @@ if (-not $existing) {
 }
 
 try {
-    npm run dev
+    npm run dev:frontend
 } finally {
     if ($backendJob) {
         Stop-Job $backendJob -ErrorAction SilentlyContinue

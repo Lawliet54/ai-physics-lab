@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-all.ps1",
+    "dev:frontend": "vite",
     "dev:backend": "cd backend && php artisan serve --host=127.0.0.1 --port=8000",
     "dev:all": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-all.ps1",
     "build": "vite build",

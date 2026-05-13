@@ -13,19 +13,19 @@ const weeklyActivity = [
 ];
 
 const labResults = [
-  { id: 1, name: "Ом заңын тәжірибелік зерттеу", date: "2025-01-10", score: 92, time: "22 мин", status: "completed" },
-  { id: 2, name: "Кулон заңын модельдеу", date: "2025-01-11", score: 87, time: "28 мин", status: "completed" },
-  { id: 3, name: "Электр өрісін визуализациялау", date: "2025-01-12", score: 95, time: "31 мин", status: "completed" },
-  { id: 4, name: "Конденсатор сыйымдылығы", date: "2025-01-13", score: 74, time: "38 мин", status: "completed" },
-  { id: 5, name: "Өткізгіштерді тізбектей жалғау", date: "2025-01-14", score: 88, time: "25 мин", status: "completed" },
-  { id: 6, name: "Ток көзінің ЭҚК зерттеу", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
-  { id: 7, name: "Магнит өрісін бақылау", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
-  { id: 8, name: "Лоренц күшінің әрекеті", date: "—", score: 0, time: "—", status: "pending" },
+  { id: 1, name: "Тізбек бөлігі үшін Ом заңын тәжірибелік зерттеу", date: "2025-01-10", score: 92, time: "22 мин", status: "completed" },
+  { id: 2, name: "Кулон заңын тәжірибелік модельдеу", date: "2025-01-11", score: 87, time: "28 мин", status: "completed" },
+  { id: 3, name: "Электр өрісінің кернеулігін визуализациялау", date: "2025-01-12", score: 95, time: "31 мин", status: "completed" },
+  { id: 4, name: "Конденсатор сыйымдылығының тәуелділігін анықтау", date: "2025-01-13", score: 74, time: "38 мин", status: "completed" },
+  { id: 5, name: "Өткізгіштерді тізбектей және параллель жалғауды модельдеу", date: "2025-01-14", score: 88, time: "25 мин", status: "completed" },
+  { id: 6, name: "Ток көзінің ЭҚК мен ішкі кедергінің ток күшіне әсерін зерттеу", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
+  { id: 7, name: "Тогы бар өткізгіштің магнит өрісін бақылау", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
+  { id: 8, name: "Лоренц күшінің қозғалысқа әсерін модельдеу", date: "—", score: 0, time: "—", status: "pending" },
 ];
 
 function StatCard({ icon: Icon, label, value, sub, color }) {
   return (
-    <div className="relative overflow-hidden rounded-[26px] border border-violet-200 bg-white p-5 shadow-[0_16px_38px_rgba(76,29,149,0.08)]">
+    <div className="relative overflow-hidden rounded-[24px] border border-violet-200 bg-white p-4 shadow-[0_14px_28px_rgba(76,29,149,0.07)]">
       <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-2xl" style={{ background: `${color}22` }} />
       <div className="mb-4 flex items-start justify-between">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl border" style={{ borderColor: `${color}33`, background: `${color}18` }}>
@@ -36,7 +36,7 @@ function StatCard({ icon: Icon, label, value, sub, color }) {
         </span>
       </div>
       <p className="text-[13px] font-semibold text-slate-500">{label}</p>
-      <p className="mt-2 text-[3rem] font-black tracking-[-0.03em] text-slate-950">{value}</p>
+      <p className="mt-1.5 text-[2.6rem] font-black tracking-[-0.03em] text-slate-950">{value}</p>
     </div>
   );
 }
@@ -91,20 +91,20 @@ export default function ResultsPage() {
   const totalActivity = weeklyActivity.reduce((sum, item) => sum + item.experiments, 0);
 
   return (
-    <div className="min-h-screen bg-[#0a0918] text-slate-100">
-      <div className="border-b border-violet-500/12 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.14),_transparent_55%),linear-gradient(180deg,#17142b_0%,#11101f_100%)]">
-        <div className="mx-auto max-w-7xl px-8 py-8">
+    <div className="min-h-screen bg-[#f4f1ff] text-slate-900">
+      <div className="border-b border-violet-200 bg-[radial-gradient(circle_at_top,_rgba(167,139,250,0.18),_transparent_55%),linear-gradient(180deg,#faf7ff_0%,#f1eeff_100%)]">
+        <div className="mx-auto max-w-7xl px-6 py-7 max-[480px]:px-4 max-[480px]:py-6">
           <div className="mb-4 flex items-center gap-3">
-            <BarChart3 size={18} className="text-violet-300" />
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-violet-300">Нәтижелер</span>
+            <BarChart3 size={18} className="text-violet-500" />
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-violet-600">Нәтижелер</span>
           </div>
 
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-4xl font-black tracking-[-0.03em] text-white md:text-[3.2rem]">Менің прогресім</h1>
-              <p className="mt-3 text-sm text-slate-500">Электр және магнетизм бойынша зертхана тәжірибелері · 2025 жыл</p>
+              <h1 className="text-4xl font-black tracking-[-0.03em] text-slate-950 md:text-[3.2rem]">Менің прогресім</h1>
+              <p className="mt-3 text-sm text-slate-600">Электр және магнетизм бойынша зертхана тәжірибелері · 2025 жыл</p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-slate-400">
+            <div className="inline-flex items-center gap-2 rounded-2xl border border-violet-200 bg-white/75 px-4 py-2.5 text-sm text-slate-600">
               <Calendar size={14} />
               Соңғы 7 күн
             </div>
@@ -113,16 +113,16 @@ export default function ResultsPage() {
       </div>
 
       <div className="bg-[#f8f7ff]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-7 px-8 py-7">
-        <section className="grid gap-5 xl:grid-cols-4 md:grid-cols-2">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-6 max-[480px]:px-4 max-[480px]:py-5">
+        <section className="grid gap-4 xl:grid-cols-4 md:grid-cols-2">
           <StatCard icon={CheckCircle2} label="Аяқталған тәжірибелер" value={completed} sub={`/ ${labResults.length}`} color="#10b981" />
           <StatCard icon={Award} label="Орташа балл" value={`${avgScore}%`} sub="үздік" color="#a78bfa" />
           <StatCard icon={Clock} label="Жалпы уақыт" value={`${totalTime}м`} sub="осы апта" color="#f59e0b" />
           <StatCard icon={TrendingUp} label="Апталық белсенділік" value={totalActivity} sub="тәжірибе" color="#06b6d4" />
         </section>
 
-        <section className="rounded-[26px] border border-violet-200 bg-white p-6 shadow-[0_20px_44px_rgba(76,29,149,0.08)]">
-          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <section className="rounded-[24px] border border-violet-200 bg-white p-5 shadow-[0_16px_34px_rgba(76,29,149,0.07)] max-[480px]:p-4">
+          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h2 className="text-[2rem] font-black tracking-[-0.02em] text-slate-950">Белсенділік Диаграммасы</h2>
               <p className="mt-1.5 text-sm text-slate-500">Соңғы 7 күндегі тәжірибе белсенділігі</p>
@@ -167,26 +167,26 @@ export default function ResultsPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-5 text-xs text-slate-500">
+          <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500">
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-500" /> Белсенді күн</span>
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-200" /> Белсенділік жоқ</span>
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-cyan-500" /> Бүгін</span>
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-[26px] border border-violet-200 bg-white shadow-[0_20px_44px_rgba(76,29,149,0.08)]">
-          <div className="flex flex-col gap-4 border-b border-violet-100 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+        <section className="overflow-hidden rounded-[24px] border border-violet-200 bg-white shadow-[0_16px_34px_rgba(76,29,149,0.07)]">
+          <div className="flex flex-col gap-3 border-b border-violet-100 px-5 py-4 lg:flex-row lg:items-center lg:justify-between max-[480px]:px-4">
             <div>
               <h2 className="text-[2rem] font-black tracking-[-0.02em] text-slate-950">Зертхана Тарихы</h2>
               <p className="mt-1.5 text-sm text-slate-500">Барлық тәжірибелер мен нәтижелер</p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-xl border border-violet-400/14 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-200">
+            <div className="inline-flex items-center gap-2 rounded-xl border border-violet-300/45 bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
               <FlaskConical size={15} />
               {labResults.length} тәжірибе
             </div>
           </div>
 
-          <div className="hidden grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-3 border-b border-violet-100 bg-violet-50 px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 lg:grid">
+          <div className="hidden grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-3 border-b border-violet-100 bg-violet-50 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 lg:grid">
             {["Тәжірибе аты", "Күні", "Уақыт", "Нәтиже", "Күйі"].map((header, index) => (
               <span key={header} className="inline-flex items-center gap-2">
                 {header}
@@ -197,7 +197,7 @@ export default function ResultsPage() {
 
           <div className="divide-y divide-violet-100">
             {labResults.map((lab, index) => (
-              <div key={lab.id} className={`px-6 py-4 transition hover:bg-violet-50 ${index % 2 === 1 ? "bg-violet-50/60" : ""}`}>
+              <div key={lab.id} className={`px-5 py-3.5 transition hover:bg-violet-50 max-[480px]:px-4 ${index % 2 === 1 ? "bg-violet-50/60" : ""}`}>
                 <div className="grid gap-4 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] lg:items-center">
                   <div className="flex items-center gap-3">
                     <span className={`h-2.5 w-2.5 rounded-full ${lab.status === "completed" ? "bg-emerald-400" : lab.status === "in-progress" ? "bg-amber-400" : "bg-slate-600"}`} />
@@ -212,7 +212,7 @@ export default function ResultsPage() {
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-6 border-t border-violet-100 bg-violet-50 px-6 py-4 text-sm">
+          <div className="flex flex-wrap gap-4 border-t border-violet-100 bg-violet-50 px-5 py-3.5 text-sm max-[480px]:px-4">
             {[
               { label: "Аяқталған", value: completed, color: "#10b981" },
               { label: "Орындалуда", value: labResults.filter((item) => item.status === "in-progress").length, color: "#f59e0b" },
@@ -227,13 +227,13 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        <section className="rounded-[26px] border border-violet-200 bg-white p-6 shadow-[0_20px_44px_rgba(76,29,149,0.08)]">
-          <div className="mb-4 flex items-center gap-3">
+        <section className="rounded-[24px] border border-violet-200 bg-white p-5 shadow-[0_16px_34px_rgba(76,29,149,0.07)] max-[480px]:p-4">
+          <div className="mb-3 flex items-center gap-3">
             <Award size={18} className="text-amber-400" />
             <span className="text-xs font-bold uppercase tracking-[0.18em] text-amber-400">Жетістіктер</span>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {[
               { emoji: "⚡", label: "Алғашқы тәжірибе", earned: true, desc: "Бірінші зертхана аяқталды" },
               { emoji: "🎯", label: "Үздік нәтиже", earned: true, desc: "95% балл алынды" },

@@ -34,7 +34,7 @@ export default function Layout() {
     : navItems;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0918] font-['Exo_2'] text-slate-100 max-[480px]:h-dvh">
+    <div className="flex h-screen overflow-hidden bg-[#f4f1ff] font-['Exo_2'] text-slate-900 max-[480px]:h-dvh">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
         .sidebar-shell {
@@ -87,7 +87,7 @@ export default function Layout() {
             position: sticky;
             top: 0;
             z-index: 20;
-            padding: 0.75rem 1rem;
+            padding: 0.625rem 0.875rem;
           }
           .mobile-menu-button {
             min-height: 44px;
@@ -100,7 +100,7 @@ export default function Layout() {
             width: min(19rem, 88vw);
           }
           .sidebar-shell nav a {
-            min-height: 48px;
+            min-height: 44px;
           }
         }
       `}</style>
@@ -115,31 +115,31 @@ export default function Layout() {
       )}
 
       <aside
-        className={`sidebar-shell ${sidebarOpen ? "mobile-open" : ""} border-r border-violet-500/15 bg-[linear-gradient(180deg,#141229_0%,#0d0b1c_100%)] shadow-[0_0_60px_rgba(0,0,0,0.35)]`}
+        className={`sidebar-shell ${sidebarOpen ? "mobile-open" : ""} border-r border-violet-200 bg-[linear-gradient(180deg,#f7f3ff_0%,#ebe7ff_100%)] shadow-[0_18px_42px_rgba(124,58,237,0.12)]`}
       >
         <div className="flex h-full flex-col">
-          <div className="border-b border-violet-500/10 px-5 py-6">
+          <div className="border-b border-violet-200 px-4 py-5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 shadow-[0_0_18px_rgba(124,58,237,0.45)]">
                 <Atom size={18} className="text-white" />
               </div>
               <div className="brand-copy mini-label">
-                <p className="text-sm font-extrabold tracking-[0.02em] text-white">AI-Physics</p>
-                <p className="text-[10px] font-semibold tracking-[0.16em] text-violet-400">LABORATORY</p>
+                <p className="text-sm font-extrabold tracking-[0.02em] text-slate-900">AI-Physics</p>
+                <p className="text-[10px] font-semibold tracking-[0.16em] text-violet-500">LABORATORY</p>
               </div>
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
                 aria-label="Жабу"
-                className="ml-auto flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white/5 hover:text-slate-200 md:hidden"
+                className="ml-auto flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 transition hover:bg-violet-100 hover:text-slate-700 md:hidden"
               >
                 <X size={18} />
               </button>
             </div>
           </div>
 
-          <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-6">
-            <div className="mini-label px-3 pb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+            <div className="mini-label px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
               Навигация
             </div>
             {visibleNavItems.map(({ id, label, icon: Icon, path }) => (
@@ -149,22 +149,22 @@ export default function Layout() {
                 end={path === "/"}
                 onClick={() => setSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `mini-group mini-center relative flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition ${
+                  `mini-group mini-center relative flex items-center gap-3 rounded-2xl border px-4 py-2.5 text-sm font-medium transition ${
                     isActive
-                      ? "border-violet-400/20 bg-gradient-to-r from-violet-500/20 to-indigo-500/10 text-white shadow-[0_0_22px_rgba(124,58,237,0.18)]"
-                      : "border-transparent text-slate-400 hover:border-violet-500/10 hover:bg-white/5 hover:text-slate-200"
+                      ? "border-violet-300 bg-gradient-to-r from-violet-100 to-indigo-50 text-slate-900 shadow-[0_10px_26px_rgba(124,58,237,0.12)]"
+                      : "border-transparent text-slate-600 hover:border-violet-200 hover:bg-violet-50 hover:text-slate-900"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={18} className={isActive ? "text-violet-300" : "text-slate-500"} />
+                    <Icon size={18} className={isActive ? "text-violet-600" : "text-slate-500"} />
                     <span className="nav-label mini-label whitespace-nowrap">{label}</span>
                     <ChevronRight
                       size={14}
-                      className={`nav-arrow mini-label ml-auto ${isActive ? "text-violet-300 opacity-100" : "opacity-0"}`}
+                      className={`nav-arrow mini-label ml-auto ${isActive ? "text-violet-600 opacity-100" : "opacity-0"}`}
                     />
-                    <span className="mini-tooltip absolute left-[calc(100%+12px)] top-1/2 hidden -translate-y-1/2 rounded-xl border border-violet-400/20 bg-[#161329] px-3 py-2 text-xs font-semibold text-violet-100 shadow-[0_10px_30px_rgba(0,0,0,0.35)] md:block lg:hidden">
+                    <span className="mini-tooltip absolute left-[calc(100%+12px)] top-1/2 hidden -translate-y-1/2 rounded-xl border border-violet-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-[0_10px_30px_rgba(76,29,149,0.12)] md:block lg:hidden">
                       {label}
                     </span>
                   </>
@@ -173,11 +173,11 @@ export default function Layout() {
             ))}
           </nav>
 
-          <div className="border-t border-violet-500/10 p-3">
-            <div className="mini-group relative rounded-2xl border border-violet-400/15 bg-gradient-to-br from-violet-500/15 to-indigo-500/8 p-4">
+          <div className="border-t border-violet-200 p-3">
+            <div className="mini-group relative rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-100 to-indigo-50 p-4">
               <div className="sidebar-footer-copy mini-label">
-                <p className="text-sm font-bold text-violet-200">{user?.display_name || user?.name}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-400">{user?.roles?.[0] || "user"}</p>
+                <p className="text-sm font-bold text-slate-900">{user?.display_name || user?.name}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{user?.roles?.[0] || "user"}</p>
                 <button
                   type="button"
                   onClick={async () => {
@@ -185,12 +185,12 @@ export default function Layout() {
                     navigate("/login", { replace: true });
                     setSidebarOpen(false);
                   }}
-                  className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-violet-300 transition hover:text-violet-200"
+                  className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-violet-700 transition hover:text-violet-800"
                 >
                   Шығу <LogOut size={12} />
                 </button>
               </div>
-              <div className="mini-tooltip absolute left-[calc(100%+12px)] top-1/2 hidden -translate-y-1/2 rounded-xl border border-violet-400/20 bg-[#161329] px-3 py-2 text-xs font-semibold text-violet-100 shadow-[0_10px_30px_rgba(0,0,0,0.35)] md:block lg:hidden">
+              <div className="mini-tooltip absolute left-[calc(100%+12px)] top-1/2 hidden -translate-y-1/2 rounded-xl border border-violet-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-[0_10px_30px_rgba(76,29,149,0.12)] md:block lg:hidden">
                 AI Көмекші
               </div>
             </div>
@@ -199,19 +199,19 @@ export default function Layout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="mobile-app-header flex items-center gap-3 border-b border-violet-500/10 bg-[#110f20] px-4 py-3 md:hidden">
+        <div className="mobile-app-header flex items-center gap-2.5 border-b border-violet-200 bg-white/90 px-4 py-3 md:hidden">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
             aria-label="Навигацияны ашу"
             aria-expanded={sidebarOpen}
-            className="mobile-menu-button inline-flex text-violet-300 transition hover:text-violet-200"
+            className="mobile-menu-button inline-flex text-violet-700 transition hover:text-violet-800"
           >
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <Atom size={16} className="text-violet-300" />
-            <span className="text-sm font-bold text-white">AI-Physics Lab</span>
+            <Atom size={16} className="text-violet-600" />
+            <span className="text-[13px] font-bold text-slate-900">AI-Physics Lab</span>
           </div>
         </div>
 

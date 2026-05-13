@@ -287,7 +287,7 @@ export default function TasksPage() {
   });
 
   return (
-    <div style={{ background: "#0a0918", minHeight: "100vh", fontFamily: "'Exo 2',sans-serif", color: "#e2e8f0" }}>
+    <div style={{ background: "#f4f1ff", minHeight: "100vh", fontFamily: "'Exo 2',sans-serif", color: "#0f172a" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
         @keyframes fadeUp {
@@ -295,7 +295,7 @@ export default function TasksPage() {
           to   { opacity:1; transform:translateY(0); }
         }
         ::-webkit-scrollbar { width:6px; }
-        ::-webkit-scrollbar-track { background:#0a0918; }
+        ::-webkit-scrollbar-track { background:#f4f1ff; }
         ::-webkit-scrollbar-thumb { background:#2d2b55; border-radius:3px; }
         .chip { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;
           cursor:pointer; border:1.5px solid transparent; transition:all 0.18s ease;
@@ -304,7 +304,7 @@ export default function TasksPage() {
         .chip.off { background:#ffffff; color:#64748b; border-color:rgba(167,139,250,0.28); }
         .chip.off:hover { border-color:#6366f1; color:#4f46e5; }
         .stat-card { background:#ffffff;
-          border:1px solid rgba(167,139,250,0.22); border-radius:14px; padding:18px 20px;
+          border:1px solid rgba(167,139,250,0.22); border-radius:14px; padding:14px 16px;
           display:flex; align-items:center; gap:14px; flex:1; min-width:160px; }
         @media (max-width: 480px) {
           .tasks-hero {
@@ -369,7 +369,7 @@ export default function TasksPage() {
         }
       `}</style>
 
-      <div className="tasks-hero" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#0e0d20 0%,#0a0918 100%)", borderBottom: "1px solid rgba(99,102,241,0.18)", padding: "44px 32px 32px" }}>
+      <div className="tasks-hero" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#faf7ff 0%,#f1eeff 100%)", borderBottom: "1px solid rgba(167,139,250,0.24)", padding: "44px 32px 32px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Breadcrumbs
             items={
@@ -383,9 +383,9 @@ export default function TasksPage() {
             }
           />
 
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
             <div>
-              <h1 className="tasks-title" style={{ fontSize: 34, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em", background: "linear-gradient(135deg,#fff 30%,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              <h1 className="tasks-title" style={{ fontSize: 34, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em", background: "linear-gradient(135deg,#0f172a 30%,#7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {currentTheory ? `${currentTheory.title} тапсырмалары` : "Тапсырмалар жинағы"}
               </h1>
               <p style={{ color: "#64748b", fontSize: 14, margin: 0, fontWeight: 400 }}>
@@ -393,18 +393,18 @@ export default function TasksPage() {
               </p>
             </div>
 
-            <div className="tasks-progress" style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: 14, padding: "12px 20px" }}>
+            <div className="tasks-progress" style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,0.78)", border: "1px solid rgba(167,139,250,0.24)", borderRadius: 14, padding: "12px 20px" }}>
               <ProgressRing done={done} total={tasks.length} />
               <div>
                 <p style={{ margin: 0, fontSize: 12, color: "#6366f1", fontWeight: 600, letterSpacing: "0.05em" }}>ОРЫНДАЛҒАНЫ</p>
-                <p style={{ margin: "2px 0 0", fontSize: 22, fontWeight: 800, color: "#fff" }}>
-                  {done} <span style={{ color: "#4b5563", fontWeight: 400, fontSize: 16 }}>/ {tasks.length}</span>
+                <p style={{ margin: "2px 0 0", fontSize: 22, fontWeight: 800, color: "#0f172a" }}>
+                  {done} <span style={{ color: "#64748b", fontWeight: 400, fontSize: 16 }}>/ {tasks.length}</span>
                 </p>
               </div>
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
             {[
               { icon: <Target size={18} color="#818cf8" />, label: "Барлық тапсырма", val: tasks.length, accent: "#6366f1" },
               { icon: <Clock size={18} color="#fbbf24" />, label: "Орындалуда", val: inProgress, accent: "#f59e0b" },
@@ -426,7 +426,7 @@ export default function TasksPage() {
       </div>
 
       <div className="tasks-filter-bar" style={{ background: "rgba(248,247,255,0.95)", borderBottom: "1px solid rgba(167,139,250,0.16)", padding: "14px 32px", position: "sticky", top: 0, zIndex: 10, backdropFilter: "blur(12px)" }}>
-        <div className="tasks-filter-inner" style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+        <div className="tasks-filter-inner" style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
           <Filter size={14} color="#6366f1" style={{ flexShrink: 0 }} />
           <div className="tasks-filter-group" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {topics.map((topic) => (
@@ -450,9 +450,9 @@ export default function TasksPage() {
       </div>
 
       <div style={{ background: "#f8f7ff" }}>
-      <div className="tasks-content" style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 32px 48px" }}>
+      <div className="tasks-content" style={{ maxWidth: 1200, margin: "0 auto", padding: "22px 32px 36px" }}>
         {currentTheory && (
-          <div className="theory-task-banner" style={{ marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid rgba(167,139,250,0.18)", background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 10px 28px rgba(76,29,149,0.06)" }}>
+          <div className="theory-task-banner" style={{ marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid rgba(167,139,250,0.18)", background: "#ffffff", borderRadius: 16, padding: "12px 16px", boxShadow: "0 10px 24px rgba(76,29,149,0.06)" }}>
             <div>
               <p style={{ margin: 0, color: "#0f172a", fontWeight: 700, fontSize: 14 }}>{currentTheory.title} бойынша тапсырмалар</p>
               <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: 12.5 }}>Теориядан кейін білімді бекіту үшін ұсынылған есептер жинағы</p>
@@ -470,7 +470,7 @@ export default function TasksPage() {
             <p style={{ fontSize: 13 }}>Фильтрді өзгертіп көріңіз</p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 18 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
             {visible.map((task, index) => (
               <TaskCard key={task.id} task={task} idx={index} onCycle={cycleStatus} />
             ))}

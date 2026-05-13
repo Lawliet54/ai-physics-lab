@@ -215,6 +215,7 @@ export default function ElectricFieldSandboxLab() {
       title="Electric Field Sandbox"
       subtitle="Экранға оң және теріс зарядтарды орналастырып, өріс бағытын, күштің таралуын және сынақ зарядтың қозғалыс траекториясын зерттеңіз."
       formula="E = F / q"
+      theoryId="coulomb-law"
       difficulty="Орташа"
       duration="25 мин"
       accent="#8b5cf6"
@@ -243,12 +244,12 @@ export default function ElectricFieldSandboxLab() {
             </div>
 
             <label className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
-              Heat map
+              Жылу картасы
               <input type="checkbox" checked={showHeatMap} onChange={() => setShowHeatMap((prev) => !prev)} />
             </label>
 
             <label className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
-              Vector arrows
+              Векторлық стрелкалар
               <input type="checkbox" checked={showVectors} onChange={() => setShowVectors((prev) => !prev)} />
             </label>
 
@@ -340,7 +341,7 @@ export default function ElectricFieldSandboxLab() {
             </p>
           </div>
           <div className="rounded-3xl bg-fuchsia-50 p-4">
-            <h3 className="text-sm font-bold text-fuchsia-900">Heat map не үшін керек?</h3>
+            <h3 className="text-sm font-bold text-fuchsia-900">Жылу картасы не үшін керек?</h3>
             <p className="mt-2 text-sm leading-6 text-fuchsia-950/80">
               Қай жерде өріс күшті, қай жерде әлсіз екенін тез көруге көмектеседі.
             </p>
