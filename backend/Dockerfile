@@ -30,4 +30,8 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 
 CMD sed -i "s/Listen 80/Listen ${PORT:-80}/" /etc/apache2/ports.conf && \
     sed -i "s/:80/:${PORT:-80}/" /etc/apache2/sites-available/000-default.conf && \
+    touch database/database.sqlite && \
+    php artisan config:clear && \
+    php artisan migrate --force && \
+    if ! php -r 'require "vendor/autoload.php"; $app = require "bootstrap/app.php"; $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap(); exit(Illuminate\Support\Facades\DB::table("users")->exists() ? 0 : 1);'; then php artisan db:seed --force --class=DatabaseSeeder; fi && \
     apache2-foreground
