@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libsqlite3-dev \
-    && docker-php-ext-install pdo_mysql sqlite3 mbstring zip exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
 
 RUN a2enmod rewrite
 
