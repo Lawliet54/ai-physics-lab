@@ -259,6 +259,7 @@ export default function CoulombsLawLab() {
     if (!dragging) return undefined;
 
     const handleMove = (event) => {
+      event.preventDefault();
       if (!simulationRef.current) return;
       const rect = simulationRef.current.getBoundingClientRect();
       const localX = ((event.clientX - rect.left) / rect.width) * SVG_WIDTH;
@@ -268,12 +269,14 @@ export default function CoulombsLawLab() {
 
     const handleUp = () => setDragging(false);
 
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseup", handleUp);
+    window.addEventListener("pointermove", handleMove, { passive: false });
+    window.addEventListener("pointerup", handleUp);
+    window.addEventListener("pointercancel", handleUp);
 
     return () => {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseup", handleUp);
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
+      window.removeEventListener("pointercancel", handleUp);
     };
   }, [dragging]);
 
@@ -406,13 +409,13 @@ export default function CoulombsLawLab() {
       <Panel title="Интерактивті симуляция" icon={ArrowRightLeft} accent="#f59e0b" className={compactPanelClass}>
         <div
           ref={simulationRef}
-          className="relative overflow-hidden rounded-[28px] border border-violet-100 bg-white"
+          className="relative touch-none overflow-hidden rounded-[28px] border border-violet-100 bg-white max-[480px]:rounded-2xl"
         >
           <div className="absolute right-4 top-4 z-10 rounded-full bg-slate-900/85 px-3 py-1.5 text-xs font-bold text-white shadow-[0_10px_20px_rgba(15,23,42,0.15)]">
             {phaseLabel}
           </div>
 
-          <svg viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`} className="h-auto w-full">
+          <svg viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`} className="h-auto w-full touch-none select-none">
             <defs>
               <radialGradient id="charge-red" cx="35%" cy="35%" r="65%">
                 <stop offset="0%" stopColor="#ffb6b6" />
@@ -443,15 +446,28 @@ export default function CoulombsLawLab() {
             <line x1={displayQ2X} y1="164" x2={displayQ2X} y2="208" stroke={q2Positive ? "#f87171" : "#60a5fa"} strokeDasharray="5 4" strokeWidth="2" opacity="0.55" />
 
             <motion.g animate={{ y: started ? [0, -2, 0] : 0 }} transition={{ repeat: Infinity, duration: 2.6 }}>
+              <motion.g
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setDragging(true);
+                }}
+                style={{ cursor: "grab" }}
+              >
               <circle cx={displayQ1X} cy={CHARGE_Y} r="34" fill={q1Positive ? "url(#charge-red)" : "url(#charge-blue)"} stroke="#ffffff" strokeWidth="4" />
               <circle cx={displayQ1X} cy={CHARGE_Y} r="40" fill="none" stroke={q1Positive ? "#ef4444" : "#3b82f6"} strokeDasharray="6 4" strokeWidth="2" opacity="0.45" />
               <text x={displayQ1X} y={CHARGE_Y + 10} textAnchor="middle" fill="#ffffff" fontSize="42" fontWeight="900">{q1Positive ? "+" : "−"}</text>
+              </motion.g>
             </motion.g>
 
             <motion.g
               animate={{ y: started ? [0, 2, 0] : 0 }}
               transition={{ repeat: Infinity, duration: 2.4 }}
-              onMouseDown={() => setDragging(true)}
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setDragging(true);
+              }}
               style={{ cursor: "grab" }}
             >
               <circle cx={displayQ2X} cy={CHARGE_Y} r="34" fill={q2Positive ? "url(#charge-red)" : "url(#charge-blue)"} stroke="#ffffff" strokeWidth="4" />
@@ -517,23 +533,23 @@ export default function CoulombsLawLab() {
             </text>
           </svg>
 
-          <div className="border-t border-violet-100 bg-white/90 px-4 py-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="border-t border-violet-100 bg-white/90 px-4 py-3 max-[480px]:px-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 max-[480px]:items-stretch">
               <div className={`text-sm leading-6 text-slate-600 transition ${showForceHighlight ? "rounded-xl bg-amber-50 px-3 py-1.5 text-amber-800 shadow-[0_8px_18px_rgba(245,158,11,0.15)]" : ""}`}>
                 <span className="font-bold text-slate-900">Формула:</span> F = {displayedForceN.toFixed(2)} Н
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 max-[480px]:w-full max-[480px]:grid max-[480px]:grid-cols-2">
                 <button
                   type="button"
                   onClick={() => setGridEnabled((prev) => !prev)}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
+                  className="min-h-11 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 max-[480px]:px-3"
                 >
                   {gridEnabled ? "Торды жасыру" : "Торды қосу"}
                 </button>
                 <button
                   type="button"
                   onClick={startExperiment}
-                  className="rounded-xl bg-amber-500 px-4 py-2 text-sm font-bold text-white shadow-[0_12px_24px_rgba(245,158,11,0.28)]"
+                  className="min-h-11 rounded-xl bg-amber-500 px-4 py-2 text-sm font-bold text-white shadow-[0_12px_24px_rgba(245,158,11,0.28)] max-[480px]:px-3"
                 >
                   Тәжірибені бастау
                 </button>
@@ -549,9 +565,9 @@ export default function CoulombsLawLab() {
         </div>
       </Panel>
 
-      <div className="flex items-stretch gap-2">
+      <div className="flex items-stretch gap-2 max-[480px]:flex-col">
         <Panel title="Формула және шамалар" icon={Info} accent="#f59e0b" className={`min-w-0 flex-1 h-full ${compactPanelClass}`}>
-          <div className="inline-flex w-full items-stretch gap-2">
+          <div className="inline-flex w-full items-stretch gap-2 max-[480px]:flex-col">
             <div className="min-w-0 flex-1 rounded-[18px] border border-violet-100 bg-white px-3 py-3 text-center shadow-[0_8px_20px_rgba(76,29,149,0.04)]">
               <div className="flex items-center justify-center gap-2 text-[1.7rem] font-black italic tracking-[-0.03em] text-slate-900 md:text-[2rem]">
                 <span>F</span>
@@ -580,8 +596,8 @@ export default function CoulombsLawLab() {
           </div>
         </Panel>
 
-        <Panel title="Нәтижелер" icon={Zap} accent="#f59e0b" className="ml-auto flex h-full w-[192px] flex-col [&>div:first-child]:px-4 [&>div:first-child]:py-3 [&>div:last-child]:flex-1 [&>div:last-child]:p-2">
-          <div className="grid h-full gap-1.5">
+        <Panel title="Нәтижелер" icon={Zap} accent="#f59e0b" className="ml-auto flex h-full w-[192px] flex-col max-[480px]:ml-0 max-[480px]:w-full [&>div:first-child]:px-4 [&>div:first-child]:py-3 [&>div:last-child]:flex-1 [&>div:last-child]:p-2">
+          <div className="grid h-full gap-1.5 max-[480px]:grid-cols-3">
             <div className={`${showForceHighlight ? "rounded-2xl ring-2 ring-amber-300 ring-offset-2 ring-offset-white" : ""}`}>
               <div className="rounded-2xl border border-violet-100 bg-violet-50/60 px-3 py-1.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Күш</div>
