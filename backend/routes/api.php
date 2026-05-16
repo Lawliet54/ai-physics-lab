@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AiChatController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CatalogController;
+use App\Http\Controllers\Api\TaskProgressController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => [
@@ -25,6 +26,16 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+
+    // Tasks progress (DB-backed). Used by Tasks/Results/Teacher pages.
+    Route::get('/me/tasks', [TaskProgressController::class, 'myTasks']);
+    Route::get('/me/task-summary', [TaskProgressController::class, 'mySummary']);
+    Route::get('/me/tasks/{taskCode}', [TaskProgressController::class, 'showTask']);
+    Route::post('/tasks/{taskId}/draft', [TaskProgressController::class, 'saveDraft']);
+    Route::post('/tasks/{taskId}/check', [TaskProgressController::class, 'checkAnswer']);
+
+    Route::middleware('role:teacher,admin')->get('/teacher/task-stats', [TaskProgressController::class, 'teacherStats']);
+    Route::middleware('role:teacher,admin')->post('/teacher/task-attempts/{attemptId}/review', [TaskProgressController::class, 'reviewAttempt']);
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/users', [AdminUserController::class, 'index']);

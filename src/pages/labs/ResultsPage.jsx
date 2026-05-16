@@ -1,26 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart, Bar, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Award, BarChart3, Calendar, CheckCircle2, ChevronDown, Clock, FlaskConical, TrendingUp } from "lucide-react";
+import { Award, BarChart3, Calendar, CheckCircle2, ChevronDown, Clock, FlaskConical, Layers, TrendingUp } from "lucide-react";
+import { apiRequest } from "../../api/apiClient";
+import { useAuth } from "../../context/AuthContext";
 
 const weeklyActivity = [
-  { day: "Дс", experiments: 2, score: 85 },
-  { day: "Сс", experiments: 1, score: 92 },
-  { day: "Ср", experiments: 3, score: 78 },
-  { day: "Бс", experiments: 0, score: 0 },
-  { day: "Жм", experiments: 2, score: 88 },
-  { day: "Сб", experiments: 4, score: 95 },
-  { day: "Жк", experiments: 1, score: 80 },
-];
-
-const labResults = [
-  { id: 1, name: "Тізбек бөлігі үшін Ом заңын тәжірибелік зерттеу", date: "2025-01-10", score: 92, time: "22 мин", status: "completed" },
-  { id: 2, name: "Кулон заңын тәжірибелік модельдеу", date: "2025-01-11", score: 87, time: "28 мин", status: "completed" },
-  { id: 3, name: "Электр өрісінің кернеулігін визуализациялау", date: "2025-01-12", score: 95, time: "31 мин", status: "completed" },
-  { id: 4, name: "Конденсатор сыйымдылығының тәуелділігін анықтау", date: "2025-01-13", score: 74, time: "38 мин", status: "completed" },
-  { id: 5, name: "Өткізгіштерді тізбектей және параллель жалғауды модельдеу", date: "2025-01-14", score: 88, time: "25 мин", status: "completed" },
-  { id: 6, name: "Ток көзінің ЭҚК мен ішкі кедергінің ток күшіне әсерін зерттеу", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
-  { id: 7, name: "Тогы бар өткізгіштің магнит өрісін бақылау", date: "2025-01-15", score: 0, time: "—", status: "in-progress" },
-  { id: 8, name: "Лоренц күшінің қозғалысқа әсерін модельдеу", date: "—", score: 0, time: "—", status: "pending" },
+  { day: "Дс", completed_count: 0, teacher_score: 0 },
+  { day: "Сс", completed_count: 0, teacher_score: 0 },
+  { day: "Ср", completed_count: 0, teacher_score: 0 },
+  { day: "Бс", completed_count: 0, teacher_score: 0 },
+  { day: "Жм", completed_count: 0, teacher_score: 0 },
+  { day: "Сб", completed_count: 0, teacher_score: 0 },
+  { day: "Жк", completed_count: 0, teacher_score: 0 },
 ];
 
 function StatCard({ icon: Icon, label, value, sub, color }) {
@@ -53,9 +44,9 @@ function CustomTooltip({ active, payload, label }) {
   return (
     <div className="rounded-2xl border border-violet-200 bg-white/95 px-4 py-3 shadow-[0_16px_30px_rgba(76,29,149,0.12)] backdrop-blur">
       <p className="text-sm font-bold text-violet-700">{label}</p>
-      <p className="mt-2 text-sm text-slate-700">Тәжірибе: <strong className="text-violet-700">{payload[0]?.value}</strong></p>
+      <p className="mt-2 text-sm text-slate-700">Орындалған тапсырма: <strong className="text-violet-700">{payload[0]?.value}</strong></p>
       {payload[1] && payload[1].value > 0 && (
-        <p className="mt-1 text-sm text-slate-700">Орт. балл: <strong className="text-emerald-600">{payload[1]?.value}%</strong></p>
+        <p className="mt-1 text-sm text-slate-700">Мұғалім қойған балл: <strong className="text-emerald-600">{payload[1]?.value}</strong></p>
       )}
     </div>
   );
@@ -90,12 +81,39 @@ function ScoreBar({ score }) {
 }
 
 export default function ResultsPage() {
+  const { user } = useAuth();
   const [chartType, setChartType] = useState("experiments");
+  const [taskSummary, setTaskSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const completed = labResults.filter((item) => item.status === "completed").length;
-  const totalTime = 22 + 28 + 31 + 38 + 25;
-  const avgScore = Math.round(labResults.filter((item) => item.score > 0).reduce((sum, item) => sum + item.score, 0) / completed);
-  const totalActivity = weeklyActivity.reduce((sum, item) => sum + item.experiments, 0);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (!user) return;
+      setLoading(true);
+      try {
+        const data = await apiRequest("/me/task-summary");
+        if (!cancelled) setTaskSummary(data);
+      } catch {
+        if (!cancelled) setTaskSummary(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const completed = taskSummary?.completed_tasks ?? 0;
+  const activityData = (taskSummary?.daily_activity?.length ? taskSummary.daily_activity : weeklyActivity).map((item) => ({
+    day: item.label || item.day,
+    completed_count: item.completed_count ?? 0,
+    teacher_score: item.teacher_score ?? 0,
+  }));
+  const totalActivity = activityData.reduce((sum, item) => sum + item.completed_count, 0);
+  const recentAttempts = taskSummary?.recent_attempts || [];
 
   return (
     <div className="min-h-screen bg-[#f4f1ff] text-slate-900">
@@ -109,7 +127,7 @@ export default function ResultsPage() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h1 className="text-4xl font-black tracking-[-0.03em] text-slate-950 md:text-[3.2rem]">Менің прогресім</h1>
-              <p className="mt-3 text-sm text-slate-600">Электр және магнетизм бойынша зертхана тәжірибелері · 2025 жыл</p>
+              <p className="mt-3 text-sm text-slate-600">Электр және магнетизм бойынша тапсырмалар прогресі мен мұғалім бағалары</p>
             </div>
             <div className="inline-flex items-center gap-2 rounded-2xl border border-violet-200 bg-white/75 px-4 py-2.5 text-sm text-slate-600">
               <Calendar size={14} />
@@ -122,10 +140,34 @@ export default function ResultsPage() {
       <div className="bg-[#f8f7ff]">
       <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-6 max-[480px]:px-4 max-[480px]:py-5">
         <section className="grid gap-4 xl:grid-cols-4 md:grid-cols-2">
-          <StatCard icon={CheckCircle2} label="Аяқталған тәжірибелер" value={completed} sub={`/ ${labResults.length}`} color="#10b981" />
-          <StatCard icon={Award} label="Орташа балл" value={`${avgScore}%`} sub="үздік" color="#a78bfa" />
-          <StatCard icon={Clock} label="Жалпы уақыт" value={`${totalTime}м`} sub="осы апта" color="#f59e0b" />
-          <StatCard icon={TrendingUp} label="Апталық белсенділік" value={totalActivity} sub="тәжірибе" color="#06b6d4" />
+          <StatCard
+            icon={Layers}
+            label="Барлық тапсырма"
+            value={taskSummary ? taskSummary.total_tasks : loading ? "..." : "—"}
+            sub="Тапсырмалар"
+            color="#7c3aed"
+          />
+          <StatCard
+            icon={CheckCircle2}
+            label="Аяқталды"
+            value={taskSummary ? taskSummary.completed_tasks : loading ? "..." : "—"}
+            sub="Тапсырма"
+            color="#10b981"
+          />
+          <StatCard
+            icon={Clock}
+            label="Орындалуда"
+            value={taskSummary ? taskSummary.in_progress_tasks : loading ? "..." : "—"}
+            sub="Тапсырма"
+            color="#f59e0b"
+          />
+          <StatCard
+            icon={Award}
+            label="Жиналған ұпай"
+            value={taskSummary ? `${taskSummary.earned_points} / ${taskSummary.max_points}` : loading ? "..." : "—"}
+            sub="Тапсырмалар"
+            color="#a78bfa"
+          />
         </section>
 
         <section
@@ -139,8 +181,8 @@ export default function ResultsPage() {
             </div>
             <div className="inline-flex rounded-2xl border border-violet-200 bg-violet-50 p-1">
               {[
-                { key: "experiments", label: "Тәжірибелер", color: "#7c3aed" },
-                { key: "score", label: "Балл", color: "#10b981" },
+                { key: "completed_count", label: "Тапсырмалар", color: "#7c3aed" },
+                { key: "teacher_score", label: "Мұғалім бағасы", color: "#10b981" },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -161,16 +203,16 @@ export default function ResultsPage() {
 
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyActivity} margin={{ top: 10, right: 6, left: -18, bottom: 0 }} barSize={36}>
+              <BarChart data={activityData} margin={{ top: 10, right: 6, left: -18, bottom: 0 }} barSize={36}>
                 <CartesianGrid strokeDasharray="4 6" stroke="#ddd6fe" vertical={false} />
                 <XAxis dataKey="day" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(124,58,237,0.08)" }} />
                 <Bar dataKey={chartType} radius={[8, 8, 0, 0]}>
-                  {weeklyActivity.map((entry, index) => {
+                  {activityData.map((entry, index) => {
                     const value = entry[chartType];
-                    const baseColor = chartType === "experiments" ? "#7c3aed" : "#10b981";
-                    return <Cell key={index} fill={value === 0 ? "#ede9fe" : `${baseColor}${chartType === "experiments" ? "" : ""}`} />;
+                    const baseColor = chartType === "completed_count" ? "#7c3aed" : "#10b981";
+                    return <Cell key={index} fill={value === 0 ? "#ede9fe" : baseColor} />;
                   })}
                 </Bar>
               </BarChart>
@@ -178,9 +220,9 @@ export default function ResultsPage() {
           </div>
 
           <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500">
-            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-500" /> Белсенді күн</span>
-            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-200" /> Белсенділік жоқ</span>
-            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-cyan-500" /> Бүгін</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-500" /> Орындалған тапсырма бар күн</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-violet-200" /> Белсенділік жоқ күн</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-cyan-500" /> Ағымдағы апта</span>
           </div>
         </section>
 
@@ -190,17 +232,17 @@ export default function ResultsPage() {
         >
           <div className="flex flex-col gap-3 border-b border-violet-100 px-5 py-4 lg:flex-row lg:items-center lg:justify-between max-[480px]:px-4">
             <div>
-              <h2 className="text-[2rem] font-black tracking-[-0.02em] text-slate-950">Зертхана Тарихы</h2>
-              <p className="mt-1.5 text-sm text-slate-500">Барлық тәжірибелер мен нәтижелер</p>
+              <h2 className="text-[2rem] font-black tracking-[-0.02em] text-slate-950">Тапсырма тарихы</h2>
+              <p className="mt-1.5 text-sm text-slate-500">Соңғы жіберілген жауаптар, мәртебе және мұғалім бағалары</p>
             </div>
             <div className="inline-flex items-center gap-2 rounded-xl border border-violet-300/45 bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
               <FlaskConical size={15} />
-              {labResults.length} тәжірибе
+              {recentAttempts.length} әрекет
             </div>
           </div>
 
           <div className="hidden grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-3 border-b border-violet-100 bg-violet-50 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 lg:grid">
-            {["Тәжірибе аты", "Күні", "Уақыт", "Нәтиже", "Күйі"].map((header, index) => (
+            {["Тапсырма", "Күні", "Тақырып", "Баға", "Күйі"].map((header, index) => (
               <span key={header} className="inline-flex items-center gap-2">
                 {header}
                 {index === 0 && <ChevronDown size={12} />}
@@ -209,17 +251,17 @@ export default function ResultsPage() {
           </div>
 
           <div className="divide-y divide-violet-100">
-            {labResults.map((lab, index) => (
+            {recentAttempts.map((lab, index) => (
               <div key={lab.id} className={`px-5 py-3.5 transition hover:bg-violet-50 max-[480px]:px-4 ${index % 2 === 1 ? "bg-violet-50/60" : ""}`}>
                 <div className="grid gap-4 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] lg:items-center">
                   <div className="flex items-center gap-3">
-                    <span className={`h-2.5 w-2.5 rounded-full ${lab.status === "completed" ? "bg-emerald-400" : lab.status === "in-progress" ? "bg-amber-400" : "bg-slate-600"}`} />
-                    <span className="text-sm font-semibold text-slate-800">{lab.name}</span>
+                    <span className={`h-2.5 w-2.5 rounded-full ${lab.status === "completed" ? "bg-emerald-400" : lab.status === "in_progress" ? "bg-amber-400" : "bg-slate-600"}`} />
+                    <span className="text-sm font-semibold text-slate-800">{lab.task_code} · {lab.task_title}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{lab.date}</div>
-                  <div className="inline-flex items-center gap-2 text-sm text-slate-500"><Clock size={12} /> {lab.time}</div>
-                  <div><ScoreBar score={lab.score} /></div>
-                  <div><StatusBadge status={lab.status} /></div>
+                  <div className="text-sm text-slate-500">{lab.submitted_at ? new Date(lab.submitted_at).toLocaleDateString() : new Date(lab.created_at).toLocaleDateString()}</div>
+                  <div className="inline-flex items-center gap-2 text-sm text-slate-500"><Clock size={12} /> {lab.topic_title || "—"}</div>
+                  <div><ScoreBar score={lab.reviewed_at ? Number(lab.score || 0) * 10 : 0} /></div>
+                  <div><StatusBadge status={lab.status === "in_progress" ? "in-progress" : lab.status} /></div>
                 </div>
               </div>
             ))}
@@ -228,9 +270,9 @@ export default function ResultsPage() {
           <div className="flex flex-wrap gap-4 border-t border-violet-100 bg-violet-50 px-5 py-3.5 text-sm max-[480px]:px-4">
             {[
               { label: "Аяқталған", value: completed, color: "#10b981" },
-              { label: "Орындалуда", value: labResults.filter((item) => item.status === "in-progress").length, color: "#f59e0b" },
-              { label: "Күтілуде", value: labResults.filter((item) => item.status === "pending").length, color: "#64748b" },
-              { label: "Орт. балл", value: `${avgScore}%`, color: "#a78bfa" },
+              { label: "Орындалуда", value: taskSummary?.in_progress_tasks ?? 0, color: "#f59e0b" },
+              { label: "Тексерілген", value: recentAttempts.filter((item) => item.reviewed_at).length, color: "#64748b" },
+              { label: "Күндік белсенділік", value: totalActivity, color: "#a78bfa" },
             ].map((item) => (
               <div key={item.label} className="inline-flex items-center gap-2">
                 <span className="text-slate-500">{item.label}:</span>

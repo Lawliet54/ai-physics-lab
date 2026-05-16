@@ -10,8 +10,8 @@ import {
   FlaskConical,
   Home,
   LogOut,
-  Menu,
   ShieldCheck,
+  UserCheck,
   X,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -27,12 +27,17 @@ const navItems = [
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarMiniMode, setSidebarMiniMode] = useState(false);
+  const sidebarMiniMode = false;
   const navigate = useNavigate();
-  const { user, isAdmin, logout } = useAuth();
-  const visibleNavItems = isAdmin
-    ? [...navItems, { id: "admin-users", label: "Аккаунттар", icon: ShieldCheck, path: "/admin/users" }]
-    : navItems;
+  const { user, isAdmin, isTeacher, logout } = useAuth();
+  const visibleNavItems = [
+    ...navItems,
+    ...(isTeacher ? [{ id: "teacher", label: "Мұғалім", icon: UserCheck, path: "/teacher" }] : []),
+    ...(isAdmin ? [{ id: "admin-users", label: "Аккаунттар", icon: ShieldCheck, path: "/admin/users" }] : []),
+  ];
+
+  // Mobile bottom navigation: keep it focused on the core student workflow.
+  const mobileNavItems = navItems;
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f4f1ff] font-['Exo_2'] text-slate-900 max-[480px]:h-dvh">
@@ -179,6 +184,42 @@ export default function Layout() {
             min-height: 44px;
           }
         }
+
+        /* Mobile bottom nav */
+        .mobile-bottom-nav {
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 40;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(221, 214, 254, 0.9);
+          padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+        }
+        .mobile-bottom-nav a {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          height: 54px;
+          border-radius: 16px;
+          text-decoration: none;
+          color: rgb(100, 116, 139);
+          transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+          font-weight: 700;
+          font-size: 10px;
+          letter-spacing: 0.02em;
+        }
+        .mobile-bottom-nav a.active {
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(99, 102, 241, 0.10));
+          color: rgb(76, 29, 149);
+        }
+        .mobile-bottom-nav a:active {
+          transform: scale(0.98);
+        }
       `}</style>
 
       {sidebarOpen && (
@@ -210,14 +251,6 @@ export default function Layout() {
               className="ml-auto flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 transition hover:bg-violet-100 hover:text-slate-700 md:hidden"
             >
               <X size={18} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setSidebarMiniMode(!sidebarMiniMode)}
-              aria-label={sidebarMiniMode ? "Сайдбарды ашу" : "Сайдбарды қысу"}
-              className="desktop-toggle-btn flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-violet-100 hover:text-slate-700"
-            >
-              {sidebarMiniMode ? <ChevronRight size={16} /> : <Menu size={16} />}
             </button>
           </div>
         </div>
@@ -284,25 +317,34 @@ export default function Layout() {
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <div className="mobile-app-header flex items-center gap-2.5 border-b border-violet-200 bg-white/90 px-4 py-3 md:hidden">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Навигацияны ашу"
-            aria-expanded={sidebarOpen}
-            className="mobile-menu-button inline-flex text-violet-700 transition hover:text-violet-800"
-          >
-            <Menu size={20} />
-          </button>
           <div className="flex items-center gap-2">
             <Atom size={16} className="text-violet-600" />
             <span className="text-[13px] font-bold text-slate-900">AI-Physics Lab</span>
           </div>
         </div>
 
-        <main className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+        <main className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden pb-24 md:pb-0">
           <Outlet />
         </main>
       </div>
+
+      <nav className="mobile-bottom-nav flex gap-2 md:hidden" aria-label="Мобилді навигация">
+        {mobileNavItems.map(({ id, label, icon: Icon, path }) => (
+          <NavLink
+            key={id}
+            to={path}
+            end={path === "/"}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            {({ isActive }) => (
+              <>
+                <Icon size={18} className={isActive ? "text-violet-700" : "text-slate-500"} />
+                <span>{label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }

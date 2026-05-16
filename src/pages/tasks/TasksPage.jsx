@@ -12,27 +12,38 @@ import {
   Target,
   Zap,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { getTheoryById } from "../../data/theoryData";
+import { apiRequest } from "../../api/apiClient";
+import { useAuth } from "../../context/AuthContext";
 
-const INITIAL_TASKS = [
-  { id: "T-01", title: "Екі нүктелік зарядтың өзара әрекетін есептеу", summary: "Кулон заңы бойынша екі нүктелік заряд арасындағы электростатикалық күшті анықтаңыз. Зарядтар мен арақашықтық берілген.", topic: "Кулон заңы", difficulty: "Базалық", points: 10, status: "done" },
-  { id: "T-02", title: "Электр өрісінің кернеулігін есептеу", summary: "Берілген нүктелік зарядтан белгілі қашықтықтағы электр өрісінің кернеулік векторын табыңыз.", topic: "Электр өрісі", difficulty: "Базалық", points: 10, status: "progress" },
-  { id: "T-03", title: "Конденсатор сыйымдылығын анықтау", summary: "Пластиналар арасындағы диэлектрик ортасы бар жазық конденсатордың электр сыйымдылығын есептеңіз.", topic: "Конденсаторлар", difficulty: "Орташа", points: 15, status: "done" },
-  { id: "T-04", title: "Тізбек бөлігіндегі кернеу құлауы", summary: "Тізбек бөлігі үшін Ом заңын қолданып, резистордағы кернеу құлауын және ток күшін табыңыз.", topic: "Тізбектер", difficulty: "Базалық", points: 10, status: "done" },
-  { id: "T-05", title: "Параллель жалғанған резисторлар", summary: "Параллель жалғанған үш резистордың жалпы кедергісін және әр тармақтағы ток күшін есептеңіз.", topic: "Тізбектер", difficulty: "Орташа", points: 15, status: "idle" },
-  { id: "T-06", title: "ЭҚК және ішкі кедергі", summary: "Батареяның ЭҚК мен ішкі кедергісін білу арқылы тұтынушыдағы кернеу мен токты анықтаңыз.", topic: "Энергия көздері", difficulty: "Орташа", points: 15, status: "idle" },
-  { id: "T-07", title: "Электр тогының жұмысы мен қуаты", summary: "Берілген уақыт ішінде электр тізбегінде атқарылатын жұмысты және тұтынылатын қуатты есептеңіз.", topic: "Қуат", difficulty: "Орташа", points: 15, status: "progress" },
-  { id: "T-08", title: "Магнит өрісіндегі ток өткізгіш", summary: "Сыртқы магнит өрісінде орналасқан токты өткізгішке әсер ететін Ампер күшін табыңыз.", topic: "Магнетизм", difficulty: "Орташа", points: 20, status: "idle" },
-  { id: "T-09", title: "Лоренц күші және зарядтың қозғалысы", summary: "Магнит өрісінде қозғалатын оң зарядқа әсер ететін Лоренц күшінің бағыты мен шамасын анықтаңыз.", topic: "Магнетизм", difficulty: "Күрделі", points: 25, status: "idle" },
-  { id: "T-10", title: "Электромагниттік индукция ЭҚК", summary: "Магнит ағынының өзгеруіне байланысты катушкада пайда болатын индукция ЭҚК есептеңіз.", topic: "Индукция", difficulty: "Күрделі", points: 25, status: "idle" },
-  { id: "T-11", title: "Кирхгоф ережелерін қолдану", summary: "Кирхгофтың екі ережесін пайдаланып, күрделі тармақталған тізбектегі барлық токтарды табыңыз.", topic: "Тізбектер", difficulty: "Күрделі", points: 30, status: "idle" },
-  { id: "T-12", title: "Конденсатор батареясындағы заряд", summary: "Тізбектей жалғанған конденсаторлар батареясындағы жалпы зарядты және кернеулерді есептеңіз.", topic: "Конденсаторлар", difficulty: "Орташа", points: 20, status: "idle" },
-  { id: "T-13", title: "Потенциалдар айырмасы", summary: "Нүктелік зарядтың электр өрісіндегі екі нүкте арасындағы потенциалдар айырмасын анықтаңыз.", topic: "Электр өрісі", difficulty: "Орташа", points: 15, status: "idle" },
-  { id: "T-14", title: "Соленоидтың магнит өрісі", summary: "Берілген параметрлері бар соленоидтың орталығындағы магнит индукциясын есептеңіз.", topic: "Магнетизм", difficulty: "Күрделі", points: 25, status: "idle" },
-  { id: "T-15", title: "Электр генераторының ЭҚК", summary: "Айнымалы ток генераторы шығаратын максималды ЭҚК мен жиілігін берілген мәліметтер арқылы табыңыз.", topic: "Генераторлар", difficulty: "Күрделі", points: 30, status: "idle" },
-];
+const statusToUi = (status) => {
+  if (status === "completed") return "done";
+  if (status === "in_progress") return "progress";
+  return "idle";
+};
+
+const difficultyUi = (difficulty) => {
+  const map = {
+    basic: "Базалық",
+    intermediate: "Орташа",
+    advanced: "Күрделі",
+  };
+  return map[difficulty] || "Базалық";
+};
+
+const normalizeTask = (row) => ({
+  id: row.code,
+  dbId: row.id,
+  title: row.title_kz,
+  summary: row.instruction || row.title_kz,
+  topic: row.topic_title || row.topic || "Тапсырмалар",
+  topicSlug: row.topic_slug || null,
+  difficulty: row.difficulty ? difficultyUi(row.difficulty) : row.difficulty || "Базалық",
+  points: row.points ?? 0,
+  status: row.my_status ? statusToUi(row.my_status) : row.status || "idle",
+});
 
 const DIFF_META = {
   "Базалық": { dot: "#22c55e", bg: "rgba(34,197,94,0.12)", text: "#4ade80", label: "Базалық" },
@@ -231,27 +242,36 @@ function ProgressRing({ done, total }) {
 
 export default function TasksPage() {
   const { theoryId } = useParams();
+  const navigate = useNavigate();
   const currentTheory = theoryId ? getTheoryById(theoryId) : null;
-  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("Барлығы");
   const [diffFilter, setDiffFilter] = useState("Барлығы");
 
   useEffect(() => {
-    if (currentTheory?.taskTopics?.length) {
-      setFilter("Теория бойынша");
-      return;
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const data = user ? await apiRequest("/me/tasks") : await apiRequest("/tasks");
+        const list = (data || []).map((row) => normalizeTask(row));
+        if (!cancelled) setTasks(list);
+      } catch {
+        if (!cancelled) setTasks([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
-    setFilter("Барлығы");
-  }, [currentTheory]);
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
-  const cycleStatus = (id) => {
-    setTasks((prev) =>
-      prev.map((task) => {
-        if (task.id !== id) return task;
-        const next = { idle: "progress", progress: "done", done: "idle" }[task.status];
-        return { ...task, status: next };
-      }),
-    );
+  const cycleStatus = async (id) => {
+    navigate(`/tasks/${id}`);
   };
 
   const done = tasks.filter((task) => task.status === "done").length;
@@ -259,13 +279,12 @@ export default function TasksPage() {
   const totalPts = tasks.reduce((acc, task) => acc + task.points, 0);
   const earnedPts = tasks.filter((task) => task.status === "done").reduce((acc, task) => acc + task.points, 0);
 
-  const topics = useMemo(() => ["Барлығы", "Теория бойынша", ...Array.from(new Set(tasks.map((task) => task.topic)))], [tasks]);
+  const topics = useMemo(() => ["Барлығы", ...Array.from(new Set(tasks.map((task) => task.topic)))], [tasks]);
   const diffs = ["Барлығы", "Базалық", "Орташа", "Күрделі"];
 
   const visible = tasks.filter((task) => {
     const okTopic =
       filter === "Барлығы" ||
-      (filter === "Теория бойынша" && currentTheory?.taskTopics?.includes(task.topic)) ||
       task.topic === filter;
     const okDiff = diffFilter === "Барлығы" || task.difficulty === diffFilter;
     return okTopic && okDiff;

@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
       user,
       booting,
       isAdmin: user?.roles?.includes("admin"),
+      isTeacher: user?.roles?.includes("teacher") || user?.roles?.includes("admin"),
       async login(login, password) {
         const data = await apiRequest("/auth/login", {
           method: "POST",

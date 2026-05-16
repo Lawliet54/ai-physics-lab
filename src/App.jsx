@@ -13,9 +13,11 @@ import AIChatAssistant from "./pages/ai/AIChatAssistant";
 import ResultsPage from "./pages/labs/ResultsPage";
 import TheoryPage from "./pages/theory/TheoryPage";
 import TasksPage from "./pages/tasks/TasksPage";
+import TaskSolvePage from "./pages/tasks/TaskSolvePage";
 import TheoryDetailPage from "./pages/theory/TheoryDetailPage";
 import LoginPage from "./pages/auth/LoginPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import TeacherStatsPage from "./pages/teacher/TeacherStatsPage";
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, booting, isAdmin } = useAuth();
@@ -53,7 +55,9 @@ function AppRoutes() {
           <Route path="labs/capacitance" element={<CapacitanceLab />} />
           <Route path="labs/series-parallel" element={<SeriesParallelLab />} />
           <Route path="tasks" element={<TasksPage />} />
+          <Route path="tasks/:taskCode" element={<TaskSolvePage />} />
           <Route path="results" element={<ResultsPage />} />
+          <Route path="teacher" element={<TeacherStatsPage />} />
           <Route path="ai" element={<AIChatAssistant />} />
           <Route path="admin/users" element={<ProtectedRoute adminOnly><AdminUsersPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
